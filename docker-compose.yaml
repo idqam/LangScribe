@@ -1,0 +1,21 @@
+services:
+  web-server:
+    container_name: web-server
+    build: ./WebServer/
+    ports: ["8000:8000"]
+    env_file:
+      - ${ENV_FILE:-dev.env}
+
+  ai-worker:
+    build: ./AIWorker/
+    ports: ["8001:8001"]
+    env_file:
+      - ${ENV_FILE:-dev.env}
+
+  redis:
+    image: redis/latest
+    volumes:
+      - redis-data:/etc/data
+
+volumes:
+  redis-data:
