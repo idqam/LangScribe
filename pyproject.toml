@@ -22,3 +22,51 @@ dependencies = [
     "spacy>=3.7.0",
     "azure-cosmos>=4.14.1",
 ]
+
+[dependency-groups]
+dev = [
+    "mypy>=1.18.2",
+    "pre-commit>=4.3.0",
+    "ruff>=0.14.4",
+    "vulture>=2.14",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+select = [
+    "ALL"
+]
+ignore = [
+    "N999",
+    "D104",
+    "D100",
+    "D103"
+]
+
+[tool.mypy]
+python_version = "3.11"
+warn_return_any = true
+warn_unused_configs = true
+show_error_codes = true
+pretty = true
+
+[tool.vulture]
+min_confidence = 80
+exclude = [
+    "*/.venv/*",
+    "*/build/*",
+    "*/dist/*",
+    "*/__pycache__/*",
+]
+ignore_names = [
+    "*_test.py",
+]
+ignore_decorators = [
+    "@app.route",
+    "@celery.task",
+    "@property",
+]
+sort_by_size = true
