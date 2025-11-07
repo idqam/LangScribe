@@ -1,8 +1,8 @@
 FROM ghcr.io/astral-sh/uv:python3.11-bookworm-slim
 WORKDIR /app
 COPY pyproject.toml ./
-RUN uv pip install --system -r pyproject.toml
-RUN python -m spacy download en_core_web_sm
-COPY . .
-EXPOSE 8002
-CMD ["python", "main.py"]
+COPY uv.lock ./ 
+RUN uv sync --frozen --no-dev 
+COPY AIWorker/ ./ 
+EXPOSE 8001
+CMD ["uv", "run", "uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8001"]

@@ -7,5 +7,3 @@ app = FastAPI(title="Feedback Service")
 async def health():
     return {"status": "ok", "service": "feedback-service"}
 
-if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=8001)
