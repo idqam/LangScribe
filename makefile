@@ -31,7 +31,7 @@ ci:
 
 .PHONY: pre-commit
 pre-commit:
-	uv run pre-commit install 
+	uv run pre-commit install
 
 .PHONY: help
 help:
