@@ -19,7 +19,7 @@ services:
   redis:
     image: redis:latest
     volumes:
-      - redis-data:/etc/data
+      - redis-data:/data
 
 volumes:
   redis-data:
