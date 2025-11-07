@@ -14,6 +14,7 @@ class UserInput(BaseModel):
         None,
         description="Type or topic of the prompt (e.g., 'diary', 'academic').",
     )
+    prompt: str | None = Field(None, description="The original prompt given to the user.")
 
 
 # ---------- TOKEN-LEVEL STRUCTURE ----------
