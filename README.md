@@ -7,8 +7,6 @@ Writing-first language learning platform.
 - **Web-Server** (8000) - Routes & auth
 - **AI-Worker** (8001) - Daily prompts and AI feedback processing
 - **Progress Analytics Service** - Tracks user progress and analytics
-- **Web** (3000) - Next.js _(coming soon)_
-- **Mobile** - React Native (Expo) _(coming soon)_
 
 ## Development
 
