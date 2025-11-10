@@ -14,7 +14,6 @@ dependencies = [
     "python-multipart>=0.0.6",
     "httpx>=0.25.0",
     "sqlalchemy>=2.0.0",
-    "alembic>=1.13.0",
     "sentry-sdk[fastapi]>=1.40.0",
     "structlog>=23.2.0",
     "prometheus-client>=0.19.0",
@@ -22,10 +21,12 @@ dependencies = [
     "spacy>=3.7.0",
     "azure-cosmos>=4.14.1",
     "asyncpg>=0.30.0",
+    "psycopg>=3.2.12",
 ]
 
 [dependency-groups]
 dev = [
+    "alembic>=1.17.1",
     "mypy>=1.18.2",
     "pre-commit>=4.3.0",
     "ruff>=0.14.4",
