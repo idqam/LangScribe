@@ -23,3 +23,7 @@ uv run uvicorn main:app --host 0.0.0.0 --port 8000
 **Data:** Supabase + Cosmos DB + Redis  
 **AI:** OpenAI + Anthropic  
 **Infra:** Docker + AWS
+
+## UML Design
+
+link: https://dbdiagram.io/d/LangScribe-69111fd46735e11170f659ae
