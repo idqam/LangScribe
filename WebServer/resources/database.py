@@ -1,38 +1,39 @@
 import os
-from collections.abc import AsyncGenerator
-from contextlib import asynccontextmanager
+from collections.abc import Generator
+from contextlib import contextmanager
 
 from dotenv import load_dotenv
-from sqlalchemy import URL
-from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
-from sqlalchemy.pool import QueuePool
+from sqlalchemy import URL, create_engine
+from sqlalchemy.orm import Session, sessionmaker
+from sqlalchemy.pool import NullPool
 
 from .config import get_db_url
 
 load_dotenv()
 
-db_url = get_db_url(async_driver=True)
+db_url = get_db_url()  
 
-engine = create_async_engine(
-    db_url,
-    pool_size=5,
-    max_overflow=10,
-    pool_timeout=30,
-    pool_recycle=3600,
-    pool_pre_ping=True,
+print("Creating engine!")
+
+engine = create_engine(
+    url='',
+    echo=True,
+    poolclass=NullPool
 )
 
-async_session = async_sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
+print("If this doesnt appear ima kms")
+
+SessionLocal = sessionmaker(engine, class_=Session, expire_on_commit=False)
 
 
-@asynccontextmanager
-async def transaction() -> AsyncGenerator[AsyncSession, None]:
-    async with async_session() as session:
-        try:
-            yield session
-            await session.commit()
-        except Exception:
-            await session.rollback()
-            raise
-        finally:
-            await session.close()
+@contextmanager
+def transaction() -> Generator[Session, None, None]:
+    session = SessionLocal()
+    try:
+        yield session
+        session.commit()
+    except Exception:
+        session.rollback()
+        raise
+    finally:
+        session.close()

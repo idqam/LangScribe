@@ -1,13 +1,16 @@
 import os
+
 from dotenv import load_dotenv
 from sqlalchemy import URL
 
 load_dotenv()
 
+
 def get_db_url(async_driver: bool = True) -> URL:
     """Get database URL with appropriate driver."""
-    driver = "postgresql+asyncpg" if async_driver else "postgresql+psycopg"
+    driver = "postgresql+psycopg2"
     
+
     return URL.create(
         drivername=driver,
         username=str(os.getenv("POSTGRES_USER")),
