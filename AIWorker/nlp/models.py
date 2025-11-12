@@ -121,11 +121,10 @@ class SentenceSegmentationResult(BaseModel):
     prompt_type: str | None = None
     processing_timestamp: datetime = Field(default_factory=datetime.utcnow)
 
-    sentences: list[Sentence]
+    sentences: list[str] | list[Sentence] | None = None
     document_complexity: DocumentComplexity | None = None
     grammar_errors: list[GrammarError] | None = None
 
-    # Higher-level metadata
     token_count: int | None = None
     sentence_count: int | None = None
     parser_used: str | None = None
