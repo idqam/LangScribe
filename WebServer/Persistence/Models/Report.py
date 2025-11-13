@@ -1,7 +1,7 @@
 from datetime import datetime
 from enum import IntEnum
 
-from sqlalchemy import JSON, DateTime, ForeignKey, func
+from sqlalchemy import JSON, DateTime, ForeignKey, Index, func
 from sqlalchemy import Enum as SQLEnum
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
@@ -32,6 +32,6 @@ class Report(Base):
     language: Mapped["Language"] = relationship(back_populates="reports")
 
     __table_args__ = (
-        IndexError("ix_user", "user_id"),
-        IndexError("ix_message", "user_message_id"),
+        Index("ix_user", "user_id"),
+        Index("ix_message", "user_message_id"),
     )

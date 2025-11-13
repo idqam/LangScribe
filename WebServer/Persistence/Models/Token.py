@@ -15,5 +15,3 @@ class Tokens(Base):
         DateTime(timezone=True),
         default=lambda: datetime.now(UTC) + timedelta(hours=3),
     )
-
-    __table_args__ = Index("ix_user", "user_id")

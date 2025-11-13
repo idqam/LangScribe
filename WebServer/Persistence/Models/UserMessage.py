@@ -9,7 +9,7 @@ class UserMessage(Base):
 
     id: Mapped[int] = mapped_column(primary_key=True)
     user_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
-    prompt_id: Mapped[int] = mapped_column(ForeignKey("languages.id"))
+    prompt_id: Mapped[int] = mapped_column(ForeignKey("prompts.id"))
     content: Mapped[JSON] = mapped_column(JSON)
 
     prompt: Mapped["Prompt"] = relationship(back_populates="messages")

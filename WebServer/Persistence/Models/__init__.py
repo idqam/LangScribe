@@ -1,5 +1,4 @@
-from sqlalchemy.orm import DeclarativeBase
-
+from .base import Base
 from .Language import CODE as LENGUAGE_CODE
 from .Language import DIFFICULTY as LENGUAGE_DIFFICULTY
 from .Language import Language as Language
@@ -13,7 +12,3 @@ from .User import User as User
 from .UserLanguage import PROFICIENCY_LEVELS as USER_PROFICIENCY_LEVELS
 from .UserLanguage import UserLanguage as UserLanguage
 from .UserMessage import UserMessage
-
-
-class Base(DeclarativeBase):
-    pass
