@@ -18,7 +18,7 @@ if config.config_file_name is not None:
     fileConfig(config.config_file_name)
 
 # Use ASYNC driver for migrations (matching your runtime)
-async_db_url = get_db_url(async_driver=True, pooled=False)
+async_db_url = get_db_url(async_driver=True)
 config.set_main_option("sqlalchemy.url", str(async_db_url))
 
 
@@ -48,7 +48,7 @@ def do_run_migrations(connection: Connection) -> None:
 async def run_async_migrations() -> None:
     """Run migrations in 'online' mode - asynchronously."""
     connectable = create_async_engine(
-        url=get_db_url(async_driver=True, pooled=False),
+        url=get_db_url(async_driver=True),
         echo=True,
         poolclass=pool.NullPool,
     )
