@@ -1,5 +1,5 @@
 TMP ?= $(abspath tmp)
-
+ENV=dev.env
 RUFF_CHECK_FLAGS = --quiet
 RUFF_FORMAT_FLAGS = --quiet
 
@@ -39,21 +39,13 @@ migrate:
 	cd WebServer && \
 	uv run alembic revision -m "$(msg)" && \
 	rm -f ../.env
-s
+
 .PHONY: migrate-up
 migrate-up:
-	ln -sf $(ENV).env .env && \
-	cd WebServer && \
-	uv run alembic upgrade head  \
-
-
-.PHONY: migrate-down
-migrate-down:
-	ln -sf $(ENV).env .env && \
-	cd WebServer && \
-	uv run alembic downgrade -1 && \
-	rm -f ../.env
-
+	ln -sf ../$(ENV) WebServer/.env
+	cd WebServer && uv run alembic upgrade head
+	rm -f WebServer/.env
+	
 .PHONY: migrate-history
 migrate-history:
 	cd WebServer && \

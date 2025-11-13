@@ -1,39 +1,42 @@
-import os
-from collections.abc import Generator
-from contextlib import contextmanager
+from collections.abc import AsyncGenerator
+from contextlib import asynccontextmanager
 
 from dotenv import load_dotenv
-from sqlalchemy import URL, create_engine
-from sqlalchemy.orm import Session, sessionmaker
+from sqlalchemy.ext.asyncio import (
+    AsyncConnection,
+    AsyncSession,
+    async_sessionmaker,
+    create_async_engine,
+)
 from sqlalchemy.pool import NullPool
 
 from .config import get_db_url
 
 load_dotenv()
 
-db_url = get_db_url()  
-
-print("Creating engine!")
-
-engine = create_engine(
-    url='',
+engine = create_async_engine(
+    url=get_db_url(async_driver=True),
     echo=True,
-    poolclass=NullPool
+    poolclass=NullPool,
 )
 
-print("If this doesnt appear ima kms")
-
-SessionLocal = sessionmaker(engine, class_=Session, expire_on_commit=False)
+SessionLocal = async_sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
 
 
-@contextmanager
-def transaction() -> Generator[Session, None, None]:
+@asynccontextmanager
+async def transaction() -> AsyncGenerator[AsyncSession, None]:
     session = SessionLocal()
     try:
         yield session
-        session.commit()
+        await session.commit()
     except Exception:
-        session.rollback()
+        await session.rollback()
         raise
     finally:
-        session.close()
+        await session.close()
+
+
+@asynccontextmanager
+async def get_connection() -> AsyncGenerator[AsyncConnection, None]:
+    async with engine.begin() as conn:
+        yield conn

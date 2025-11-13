@@ -1,3 +1,1 @@
-from .resources import transaction
-
-    
+from .resources import transaction as transaction
