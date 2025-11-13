@@ -1,7 +1,7 @@
 from datetime import datetime
 from enum import IntEnum
 
-from sqlalchemy import DateTime, ForeignKey, func
+from sqlalchemy import DateTime, ForeignKey, Index, String, UniqueConstraint, func
 from sqlalchemy import Enum as SQLEnum
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
@@ -18,16 +18,14 @@ class User(Base):
     __tablename__ = "users"
 
     id: Mapped[int] = mapped_column(primary_key=True)
+    email: Mapped[str] = mapped_column(String(255), unique=True)
     uuid: Mapped[str] = mapped_column(unique=True)
-    hashed_password: Mapped[str] = mapped_column(hash=True)
+    hashed_password: Mapped[str] = mapped_column()  # Remove hash=True, hash before storing
     role: Mapped[Role] = mapped_column(SQLEnum(Role), default=Role.USER)
     pfp: Mapped[str | None] = mapped_column()
     day_streak: Mapped[int] = mapped_column(default=0)
-    subscription_id: Mapped[int] = mapped_column(ForeignKey("subscription.id"))
-    last_login: Mapped[datetime | None] = mapped_column(
-        DateTime(timezone=True),
-        server_default=func.now(),
-    )
+    subscription_id: Mapped[int] = mapped_column(ForeignKey("subscriptions.id"))
+    last_login: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
     updated_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
@@ -35,4 +33,11 @@ class User(Base):
         onupdate=func.now(),
     )
 
-    subscription: Mapped["Subscription"] = relationship()
+    subscription: Mapped["Subscription"] = relationship(back_populates="users")
+    user_languages: Mapped[list["UserLanguage"]] = relationship(back_populates="user")
+    reports: Mapped[list["Report"]] = relationship(back_populates="user")
+
+    __table_args__ = (
+        Index("ix_email", "email"),
+        UniqueConstraint("email", name="uq_email"),
+    )

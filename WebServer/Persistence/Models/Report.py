@@ -27,8 +27,9 @@ class Report(Base):
     rating: Mapped[RATE] = mapped_column(SQLEnum(RATE))
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
 
-    user: Mapped["User"] = relationship(back_populates="users")
-    message: Mapped["UserMessage"] = relationship(back_populates="user_messages")
+    user: Mapped["User"] = relationship(back_populates="reports")
+    message: Mapped["UserMessage"] = relationship(back_populates="report")
+    language: Mapped["Language"] = relationship(back_populates="reports")
 
     __table_args__ = (
         IndexError("ix_user", "user_id"),

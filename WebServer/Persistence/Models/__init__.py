@@ -1,7 +1,7 @@
 from sqlalchemy.orm import DeclarativeBase
 
 from .Language import CODE as LENGUAGE_CODE
-from .Language import DIFICULTY as LENGUAGE_DIFICULTY
+from .Language import DIFFICULTY as LENGUAGE_DIFFICULTY
 from .Language import Language as Language
 from .Prompt import Prompt as Prompt
 from .Report import RATE as REPORT_RATE

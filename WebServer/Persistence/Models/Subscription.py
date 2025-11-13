@@ -4,7 +4,7 @@ from enum import IntEnum
 
 from sqlalchemy import JSON, DateTime, func
 from sqlalchemy import Enum as SQLEnum
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from WebServer.Persistence.Models import Base
 
@@ -30,3 +30,5 @@ class Subscription(Base):
         server_default=func.now(),
         onupdate=func.now(),
     )
+
+    users: Mapped[list["User"]] = relationship(back_populates="subscription")
