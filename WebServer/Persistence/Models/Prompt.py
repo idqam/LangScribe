@@ -12,7 +12,7 @@ class Prompt(Base):
 
     id: Mapped[int] = mapped_column(primary_key=True)
     language_id: Mapped[int] = mapped_column(ForeignKey("languages.id"))
-    content: Mapped[JSON] = mapped_column()
+    content: Mapped[dict] = mapped_column(JSON)
     difficulty: Mapped[LENGUAGE_DIFFICULTY] = mapped_column(
         SQLEnum(LENGUAGE_DIFFICULTY),
         default=LENGUAGE_DIFFICULTY.INTERMEDIATE,
