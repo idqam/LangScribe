@@ -1,9 +1,11 @@
 from typing import Optional
-from sqlalchemy import select, func
+
+from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from AIWorker.promptGen.promptEnums import PromptDifficulty, PromptCategory
-from WebServer.Persistence.Models import Prompt as DBPrompt, Language as DBLanguage
+from AIWorker.promptGen.promptEnums import PromptCategory, PromptDifficulty
+from WebServer.Persistence.Models import Language as DBLanguage
+from WebServer.Persistence.Models import Prompt as DBPrompt
 
 
 class PromptRepository:
@@ -15,16 +17,20 @@ class PromptRepository:
         language: str,
         level: str,
         difficulty: PromptDifficulty,
-        category: PromptCategory
-    ) -> Optional[str]:
+        category: PromptCategory,
+    ) -> str | None:
         normalized_lang = language.strip().lower()
         normalized_level = level.strip().upper()
 
         async with self.session_factory() as session:
-            lang_stmt = select(DBLanguage).where(
-                (DBLanguage.code == normalized_lang.upper())
-                | (DBLanguage.name.ilike(normalized_lang))
-            ).limit(1)
+            lang_stmt = (
+                select(DBLanguage)
+                .where(
+                    (DBLanguage.code == normalized_lang.upper())
+                    | (DBLanguage.name.ilike(normalized_lang)),
+                )
+                .limit(1)
+            )
 
             lang_row = (await session.execute(lang_stmt)).scalar_one_or_none()
             if not lang_row:
@@ -52,10 +58,14 @@ class PromptRepository:
         normalized_level = level.strip().upper()
 
         async with self.session_factory() as session:
-            lang_stmt = select(DBLanguage).where(
-                (DBLanguage.code == normalized_lang.upper())
-                | (DBLanguage.name.ilike(normalized_lang))
-            ).limit(1)
+            lang_stmt = (
+                select(DBLanguage)
+                .where(
+                    (DBLanguage.code == normalized_lang.upper())
+                    | (DBLanguage.name.ilike(normalized_lang)),
+                )
+                .limit(1)
+            )
 
             lang_row = (await session.execute(lang_stmt)).scalar_one_or_none()
             if not lang_row:

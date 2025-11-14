@@ -1,10 +1,10 @@
 from AIWorker.promptGen.promptModels import PromptRequest
 
-#TODO: integrate with LLM client (OpenAI, OpenRouter, Local LLM, etc.)
+# TODO: integrate with LLM client (OpenAI, OpenRouter, Local LLM, etc.)
+
 
 class LLMPromptGenerator:
-    """
-    Tier 3: LLM fallback. Replace generate() with your OpenAI/OpenRouter/Local LLM call.
+    """Tier 3: LLM fallback. Replace generate() with your OpenAI/OpenRouter/Local LLM call.
     Kept intentionally minimal and sync/async-agnostic so you can plug any client.
     """
 

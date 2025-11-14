@@ -74,9 +74,9 @@ class NormalizerPipeline:
     def _select_normalizer(self, language: str) -> TextNormalizer:
         """Return a language-specific normalizer if available."""
         return self.normalizers.get(language, self.default_normalizer)
+
     def process(self, raw_text: str) -> SentenceSegmentationResult:
-        """
-        Convenience wrapper so external systems can call pipeline.process(raw_text)
+        """Convenience wrapper so external systems can call pipeline.process(raw_text)
         instead of building a UserInput object manually.
         """
         user_input = UserInput(

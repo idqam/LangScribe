@@ -1,15 +1,15 @@
 from datetime import datetime
 from typing import Any
 
-from sqlalchemy import JSON, DateTime, ForeignKey, func, String
+from sqlalchemy import JSON, DateTime, ForeignKey, String, func
 from sqlalchemy import Enum as SQLEnum
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
+from AIWorker.promptGen.promptEnums import PromptCategory
 from WebServer.Persistence.Models import (
     LENGUAGE_DIFFICULTY,
     Base,
 )
-from AIWorker.promptGen.promptEnums import PromptCategory
 
 
 class Prompt(Base):
@@ -29,5 +29,5 @@ class Prompt(Base):
         server_default=func.now(),
     )
 
-    language: Mapped["Language"] = relationship(back_populates="prompts") # type: ignore
-    messages: Mapped[list["UserMessage"]] = relationship(back_populates="prompt") # type: ignore
+    language: Mapped["Language"] = relationship(back_populates="prompts")  # type: ignore
+    messages: Mapped[list["UserMessage"]] = relationship(back_populates="prompt")  # type: ignore

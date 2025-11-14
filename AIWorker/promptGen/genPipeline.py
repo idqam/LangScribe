@@ -1,6 +1,6 @@
+import random
 from enum import Enum
 from typing import Dict, List, Optional
-import random
 
 from AIWorker.promptGen.promptEnums import PromptDifficulty, UnifiedPromptType
 
@@ -13,7 +13,7 @@ class PromptRequest:
         user_language: str,
         current_level: str,
         target_level: str,
-        topic: Optional[str] = None,
+        topic: str | None = None,
     ):
         self.prompt_type = prompt_type
         self.prompt_difficulty = prompt_difficulty
@@ -67,9 +67,6 @@ class PromptResponse:
         }
 
 
-
-
-
 class PromptSeed:
     """Represents one row of prompt_seeds in DB."""
 
@@ -82,7 +79,7 @@ class PromptSeed:
         complexity: str,
         unified_type: str,
         category: str,
-        topic: Optional[str],
+        topic: str | None,
         base_prompt: str,
     ):
         self.id = id
@@ -96,19 +93,16 @@ class PromptSeed:
         self.base_prompt = base_prompt
 
 
-
 class PromptRegistry:
-    """
-    Loads all prompts at startup and organizes them by:
+    """Loads all prompts at startup and organizes them by:
     registry[language][level] -> List[PromptSeed]
     """
 
     def __init__(self):
-        self.registry: Dict[str, Dict[str, List[PromptSeed]]] = {}
-        self.cache: Dict[str, PromptSeed] = {}  # (language+level)->cached prompt
+        self.registry: dict[str, dict[str, list[PromptSeed]]] = {}
+        self.cache: dict[str, PromptSeed] = {}  # (language+level)->cached prompt
 
- 
-    def load_from_db(self, seeds: List[PromptSeed]):
+    def load_from_db(self, seeds: list[PromptSeed]):
         for seed in seeds:
             lang = seed.language.lower()
             level = seed.level.upper()
@@ -121,18 +115,15 @@ class PromptRegistry:
 
             self.registry[lang][level].append(seed)
 
-    
-    def get_prompt(self, language: str, level: str) -> Optional[PromptSeed]:
+    def get_prompt(self, language: str, level: str) -> PromptSeed | None:
         lang = language.lower()
         level = level.upper()
 
         key = f"{lang}:{level}"
 
-        
         if key in self.cache:
             return self.cache[key]
 
-        
         if lang not in self.registry or level not in self.registry[lang]:
             return None
 
@@ -141,14 +132,11 @@ class PromptRegistry:
         if not options:
             return None
 
-        
         selected = random.choice(options)
 
-        
         self.cache[key] = selected
 
         return selected
-
 
 
 class PromptGenerator:
@@ -159,7 +147,6 @@ class PromptGenerator:
     # MAIN GENERATION METHOD
     # ---------------------
     def generate(self, request: PromptRequest) -> PromptResponse:
-        
         seed = self.registry.get_prompt(request.user_language, request.current_level)
 
         if seed is None:

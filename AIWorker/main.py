@@ -9,7 +9,7 @@ from rich.panel import Panel
 from rich.pretty import Pretty
 from rich.progress import track
 from rich.table import Table
-from spacy.attrs import POS   # type: ignore[import]
+from spacy.attrs import POS  # type: ignore[import]
 
 from AIWorker.nlp.models import UserInput
 from AIWorker.nlp.normalizerPipeline import NormalizerPipeline
@@ -75,7 +75,6 @@ def extract_rich_insights(text: str, language: str = "en") -> dict:
         ][:10],
     }
     return insights
-   
 
 
 def display_rich_insights(insights: dict) -> None:

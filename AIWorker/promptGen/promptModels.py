@@ -8,15 +8,15 @@ from AIWorker.promptGen.promptEnums import PromptCategory, PromptDifficulty, Uni
 class PromptRequest:
     prompt_difficulty: PromptDifficulty
     prompt_type: UnifiedPromptType
-    user_language: str                # language code or name (lowercased)
-    current_level: str                # CEFR e.g. "A1"
+    user_language: str  # language code or name (lowercased)
+    current_level: str  # CEFR e.g. "A1"
     target_level: str
     category: PromptCategory = PromptCategory.GENERAL
-    topic: Optional[str] = None
+    topic: str | None = None
 
 
 @dataclass
 class PromptResponse:
     prompt_text: str
-    source: str        # "internal", "database", or "llm"
-    prompt_id: Optional[int] = None
+    source: str  # "internal", "database", or "llm"
+    prompt_id: int | None = None

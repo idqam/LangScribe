@@ -1,13 +1,16 @@
 # prompt_dao.py
-from typing import Optional, Any
-from sqlalchemy import select, func
+from typing import Any, Optional
+
+from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
-from WebServer.Persistence.Models import Prompt as DBPrompt, Language as DBLanguage
-from AIWorker.promptGen.promptEnums import PromptDifficulty, PromptCategory
+
+from AIWorker.promptGen.promptEnums import PromptCategory, PromptDifficulty
+from WebServer.Persistence.Models import Language as DBLanguage
+from WebServer.Persistence.Models import Prompt as DBPrompt
+
 
 class PromptDAO:
-    """
-    Async DAO for prompt retrieval from the DB.
+    """Async DAO for prompt retrieval from the DB.
     Expects DBPrompt.content to be JSON containing 'text' or 'prompt' keys.
     """
 
@@ -19,17 +22,19 @@ class PromptDAO:
         language: str,
         unified_type: str,
         difficulty: PromptDifficulty,
-        category: PromptCategory
-    ) -> Optional[str]:
-        """
-        Finds a random prompt by language and difficulty. The query is simple —
+        category: PromptCategory,
+    ) -> str | None:
+        """Finds a random prompt by language and difficulty. The query is simple —
         expand filters as you store more metadata in DBPrompt.content.
         """
-
         async with self.session_factory() as session:  # type: ignore # type: AsyncSession
-            stmt_lang = select(DBLanguage).where(
-                (DBLanguage.code == language.upper()) | (DBLanguage.name.ilike(language))
-            ).limit(1)
+            stmt_lang = (
+                select(DBLanguage)
+                .where(
+                    (DBLanguage.code == language.upper()) | (DBLanguage.name.ilike(language)),
+                )
+                .limit(1)
+            )
             lang_row = (await session.execute(stmt_lang)).scalar_one_or_none()
             if not lang_row:
                 return None

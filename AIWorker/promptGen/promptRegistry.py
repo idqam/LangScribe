@@ -1,10 +1,11 @@
 from typing import Dict, List
+
 from AIWorker.promptGen.promptEnums import PromptCategory, PromptDifficulty
 
 
 class PromptRegistry:
     def __init__(self):
-        self.cache: Dict[str, Dict[str, Dict[str, str]]] = {}
+        self.cache: dict[str, dict[str, dict[str, str]]] = {}
 
     def get_cached_prompt(self, user_id: str, lang: str, level: str) -> str | None:
         user_map = self.cache.get(user_id)
