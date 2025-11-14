@@ -1,5 +1,6 @@
 from datetime import datetime
 from enum import IntEnum
+from typing import Any
 
 from sqlalchemy import JSON, DateTime, ForeignKey, Index, func
 from sqlalchemy import Enum as SQLEnum
@@ -23,7 +24,7 @@ class Report(Base):
     user_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
     language_id: Mapped[int] = mapped_column(ForeignKey("languages.id"))
     user_message_id: Mapped[int] = mapped_column(ForeignKey("user_messages.id"))
-    content: Mapped[JSON] = mapped_column(JSON)
+    content: Mapped[dict[str, Any]] = mapped_column(JSON)
     rating: Mapped[RATE] = mapped_column(SQLEnum(RATE))
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
 
