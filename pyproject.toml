@@ -3,11 +3,11 @@ name = "langscribe_api"
 version = "0.1.0"
 requires-python = ">=3.11"
 dependencies = [
-    "fastapi>=0.104.0",
+    "fastapi>=0.121.1",
     "uvicorn[standard]>=0.24.0",
     "pydantic>=2.5.0",
-    "pydantic-settings>=2.1.0",
-    "supabase>=2.3.0",
+    "pydantic-settings>=2.12.0",
+    "supabase>=2.24.0",
     "redis>=5.0.0",
     "python-jose[cryptography]>=3.3.0",
     "passlib[bcrypt]>=1.7.4",
@@ -21,6 +21,7 @@ dependencies = [
     "spacy>=3.7.0",
     "azure-cosmos>=4.14.1",
     "asyncpg>=0.30.0",
+    "rich>=14.2.0",
     "psycopg>=3.2.12",
     "psycopg2-binary>=2.9.11",
 ]
@@ -29,7 +30,7 @@ dependencies = [
 dev = [
     "alembic>=1.17.1",
     "mypy>=1.18.2",
-    "pre-commit>=4.3.0",
+    "pre-commit>=4.4.0",
     "ruff>=0.14.4",
     "vulture>=2.14",
 ]
@@ -50,6 +51,9 @@ ignore = [
     "INP001",
     "D101",
     "RUF003",
+    "D107",
+    "BLE001",
+    
     "F401",
     "N814",
     "N801",
