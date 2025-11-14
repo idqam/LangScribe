@@ -5,7 +5,9 @@ from sqlalchemy import JSON, DateTime, ForeignKey, func
 from sqlalchemy import Enum as SQLEnum
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from WebServer.Persistence.Models import LENGUAGE_DIFFICULTY, Base
+from Models import Base
+
+from ..Enums import LANGUAGE_DIFFICULTY
 
 
 class Prompt(Base):
@@ -14,9 +16,9 @@ class Prompt(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
     language_id: Mapped[int] = mapped_column(ForeignKey("languages.id"))
     content: Mapped[dict[str, Any]] = mapped_column(JSON)
-    difficulty: Mapped[LENGUAGE_DIFFICULTY] = mapped_column(
-        SQLEnum(LENGUAGE_DIFFICULTY),
-        default=LENGUAGE_DIFFICULTY.INTERMEDIATE,
+    difficulty: Mapped[LANGUAGE_DIFFICULTY] = mapped_column(
+        SQLEnum(LANGUAGE_DIFFICULTY),
+        default=LANGUAGE_DIFFICULTY.INTERMEDIATE,
     )
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),

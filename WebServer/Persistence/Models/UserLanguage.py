@@ -5,16 +5,9 @@ from sqlalchemy import DateTime, ForeignKey, Index, UniqueConstraint, func
 from sqlalchemy import Enum as SQLEnum
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from WebServer.Persistence.Models import Base
+from Models import Base
 
-
-class PROFICIENCY_LEVELS(StrEnum):
-    A1 = "A1"
-    A2 = "A2"
-    B1 = "B1"
-    B2 = "B2"
-    C1 = "C1"
-    C2 = "C2"
+from ..Enums import PROFICIENCY_LEVELS
 
 
 class UserLanguage(Base):

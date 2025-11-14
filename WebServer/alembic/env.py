@@ -9,20 +9,19 @@ from sqlalchemy.engine import Connection
 from sqlalchemy.ext.asyncio import create_async_engine
 
 sys.path.append(os.path.join(os.path.dirname(__file__), "..", ".."))
+from WebServer.Persistence.Models import Base
 from WebServer.resources import get_db_url
 
 config = context.config
 
-# Interpret the config file for Python logging
 if config.config_file_name is not None:
     fileConfig(config.config_file_name)
 
-# Use ASYNC driver for migrations (matching your runtime)
 async_db_url = get_db_url(async_driver=True)
 config.set_main_option("sqlalchemy.url", str(async_db_url))
 
 
-target_metadata = None
+target_metadata = Base.metadata
 
 
 def run_migrations_offline() -> None:

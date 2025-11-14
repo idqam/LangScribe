@@ -3,7 +3,7 @@ from datetime import UTC, datetime, timedelta
 from sqlalchemy import DateTime, func
 from sqlalchemy.orm import Mapped, mapped_column
 
-from WebServer.Persistence.Models import Base
+from Models import Base
 
 
 class Tokens(Base):

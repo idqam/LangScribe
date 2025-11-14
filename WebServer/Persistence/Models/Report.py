@@ -6,15 +6,9 @@ from sqlalchemy import JSON, DateTime, ForeignKey, Index, func
 from sqlalchemy import Enum as SQLEnum
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from WebServer.Persistence.Models import Base
+from Models import Base
 
-
-class RATE(IntEnum):
-    NOVICE = 1
-    BEGINNER = 2
-    COMPETENT = 3
-    PROFICIENT = 4
-    EXPERT = 5
+from ..Enums import RATE
 
 
 class Report(Base):
