@@ -1,4 +1,5 @@
 from datetime import datetime
+from typing import Any
 
 from sqlalchemy import JSON, DateTime, ForeignKey, func
 from sqlalchemy import Enum as SQLEnum
@@ -12,7 +13,7 @@ class Prompt(Base):
 
     id: Mapped[int] = mapped_column(primary_key=True)
     language_id: Mapped[int] = mapped_column(ForeignKey("languages.id"))
-    content: Mapped[JSON] = mapped_column()
+    content: Mapped[dict[str, Any]] = mapped_column(JSON)
     difficulty: Mapped[LENGUAGE_DIFFICULTY] = mapped_column(
         SQLEnum(LENGUAGE_DIFFICULTY),
         default=LENGUAGE_DIFFICULTY.INTERMEDIATE,
