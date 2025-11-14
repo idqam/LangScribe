@@ -25,7 +25,7 @@ class Language(Base):
     __tablename__ = "languages"
 
     id: Mapped[int] = mapped_column(primary_key=True)
-    code: Mapped[CODE] = mapped_column(SQLEnum(CODE))
+    code: Mapped[CODE] = mapped_column(SQLEnum(CODE), unique=True)
     name: Mapped[str] = mapped_column()
     difficulty: Mapped[DIFFICULTY] = mapped_column(
         SQLEnum(DIFFICULTY),

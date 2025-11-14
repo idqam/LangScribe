@@ -23,7 +23,7 @@ class User(Base):
     hashed_password: Mapped[str] = mapped_column()  # Remove hash=True, hash before storing
     role: Mapped[Role] = mapped_column(SQLEnum(Role), default=Role.USER)
     pfp: Mapped[str | None] = mapped_column()
-    day_streak: Mapped[int] = mapped_column(default=0)
+    day_streak: Mapped[int] = mapped_column(server_default="0")
     subscription_id: Mapped[int] = mapped_column(ForeignKey("subscriptions.id"))
     last_login: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())

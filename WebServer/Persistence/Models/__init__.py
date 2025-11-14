@@ -12,3 +12,4 @@ from .User import User as User
 from .UserLanguage import PROFICIENCY_LEVELS as USER_PROFICIENCY_LEVELS
 from .UserLanguage import UserLanguage as UserLanguage
 from .UserMessage import UserMessage
+from .Token import Tokens as Tokens

@@ -19,7 +19,7 @@ class Subscription(Base):
     __tablename__ = "subscriptions"
 
     id: Mapped[int] = mapped_column(primary_key=True)
-    tier: Mapped[TIER] = mapped_column(SQLEnum(TIER))
+    tier: Mapped[TIER] = mapped_column(SQLEnum(TIER), unique=True)
     name: Mapped[str] = mapped_column()
     price: Mapped[Decimal] = mapped_column()
     billing_period_months: Mapped[int] = mapped_column()
