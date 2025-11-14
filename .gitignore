@@ -1,8 +1,10 @@
 __pycache__/\n*.pyc\n.venv/\nuv.lock
-
+__pycache__
 
 ./.venv
 *.env
 .env
 .ruff_cache
 .mypy_cache
+
+
