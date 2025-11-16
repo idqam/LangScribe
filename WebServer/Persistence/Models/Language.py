@@ -1,13 +1,12 @@
 from datetime import datetime
 from enum import IntEnum
 
+from Persistence.Enums import LANGUAGE_CODE, LANGUAGE_DIFFICULTY
 from sqlalchemy import DateTime, func
 from sqlalchemy import Enum as SQLEnum
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from base import Base
-
-from ..Enums import LANGUAGE_CODE, LANGUAGE_DIFFICULTY
+from .base import Base
 
 
 class Language(Base):

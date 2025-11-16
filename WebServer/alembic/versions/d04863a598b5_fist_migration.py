@@ -81,7 +81,10 @@ def upgrade() -> None:
         "tokens",
         sa.Column("jti", sa.Integer(), nullable=False),
         sa.Column(
-            "renewd_at", sa.DateTime(timezone=True), server_default=sa.text("now()"), nullable=False
+            "renewd_at",
+            sa.DateTime(timezone=True),
+            server_default=sa.text("now()"),
+            nullable=False,
         ),
         sa.Column("expires_at", sa.DateTime(timezone=True), nullable=False),
         sa.PrimaryKeyConstraint("jti"),

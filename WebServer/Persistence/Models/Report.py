@@ -2,13 +2,12 @@ from datetime import datetime
 from enum import IntEnum
 from typing import Any
 
+from Persistence.Enums import RATE
 from sqlalchemy import JSON, DateTime, ForeignKey, Index, func
 from sqlalchemy import Enum as SQLEnum
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from Models import Base
-
-from ..Enums import RATE
+from .base import Base
 
 
 class Report(Base):

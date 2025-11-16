@@ -2,9 +2,8 @@ from datetime import datetime
 from decimal import Decimal
 from typing import Any
 
+from Persistence.Enums import SUBSCRIPTION_TIER
 from pydantic import BaseModel
-
-from ..Enums import SUBSCRIPTION_TIER
 
 
 class SubscriptionCreate(BaseModel):
@@ -14,6 +13,7 @@ class SubscriptionCreate(BaseModel):
     billing_period_months: int
     features: dict[str, Any]
 
+
 class SubscriptionRead(BaseModel):
     id: int
     tier: SUBSCRIPTION_TIER
@@ -22,5 +22,5 @@ class SubscriptionRead(BaseModel):
     billing_period_months: int
     features: dict[str, Any]
     created_at: datetime
-    upated_at: datetime
+    upted_at: datetime
     model_config = {"from_attributes": True}

@@ -1,13 +1,12 @@
 from datetime import datetime
 from enum import StrEnum
 
+from Persistence.Enums import PROFICIENCY_LEVELS
 from sqlalchemy import DateTime, ForeignKey, Index, UniqueConstraint, func
 from sqlalchemy import Enum as SQLEnum
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from Models import Base
-
-from ..Enums import PROFICIENCY_LEVELS
+from .base import Base
 
 
 class UserLanguage(Base):

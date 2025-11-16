@@ -1,13 +1,12 @@
 from datetime import datetime
 from typing import Any
 
+from Persistence.Enums import LANGUAGE_DIFFICULTY
 from sqlalchemy import JSON, DateTime, ForeignKey, func
 from sqlalchemy import Enum as SQLEnum
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from Models import Base
-
-from ..Enums import LANGUAGE_DIFFICULTY
+from .base import Base
 
 
 class Prompt(Base):

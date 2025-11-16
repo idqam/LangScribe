@@ -3,10 +3,10 @@ from datetime import UTC, datetime, timedelta
 from sqlalchemy import DateTime, func
 from sqlalchemy.orm import Mapped, mapped_column
 
-from Models import Base
+from .base import Base
 
 
-class Tokens(Base):
+class Token(Base):
     __tablename__ = "tokens"
 
     jti: Mapped[int] = mapped_column(primary_key=True)

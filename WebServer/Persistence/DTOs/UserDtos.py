@@ -1,8 +1,7 @@
 from datetime import datetime
 
+from Persistence.Enums import USER_ROLE
 from pydantic import BaseModel
-
-from ..Enums import USER_ROLE
 
 
 class UserCreate(BaseModel):
