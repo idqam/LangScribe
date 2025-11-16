@@ -6,7 +6,7 @@ from .base import Base as Base
 from .Language import Language as Language
 from .Prompt import Prompt as Prompt
 from .Report import RATE as REPORT_RATE
-from .Report import Report as REPORT
+from .Report import Report as Report
 from .Subscription import SUBSCRIPTION_TIER as SUBSCRIPTION_TIER
 from .Subscription import Subscription as Subscription
 from .Token import Token as Token

@@ -22,5 +22,5 @@ class SubscriptionRead(BaseModel):
     billing_period_months: int
     features: dict[str, Any]
     created_at: datetime
-    upted_at: datetime
+    updated_at: datetime
     model_config = {"from_attributes": True}
