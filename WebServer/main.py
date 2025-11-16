@@ -3,6 +3,6 @@ from fastapi import FastAPI
 app = FastAPI(title="LangScribe API Gateway")
 
 
-@app.get("/health")
+@app.post("/health")
 async def health() -> dict[str, str]:
-    return {"status": "ok", "service": "api-gateway"}
+    return {"status": "cool", "service": "vibing"}

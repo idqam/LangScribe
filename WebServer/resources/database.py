@@ -16,7 +16,7 @@ load_dotenv()
 
 engine = create_async_engine(
     url=get_db_url(async_driver=True),
-    echo=True,
+    echo=False,
     poolclass=NullPool,
 )
 

@@ -24,6 +24,7 @@ dependencies = [
     "rich>=14.2.0",
     "psycopg>=3.2.12",
     "psycopg2-binary>=2.9.11",
+    "greenlet>=3.2.4",
 ]
 
 [dependency-groups]
@@ -76,7 +77,12 @@ warn_return_any = true
 warn_unused_configs = true
 show_error_codes = true
 pretty = true
-exclude = ["^WebServer/Persistence/Models/"]
+disable_error_code = ["import-not-found"]
+
+[[tool.mypy.overrides]]
+module = "WebServer.Persistence.Models.*"
+ignore_errors = true
+
 
 [tool.vulture]
 min_confidence = 80
@@ -85,6 +91,7 @@ exclude = [
     "*/build/*",
     "*/dist/*",
     "*/__pycache__/*",
+    "WebServer/alembic/versions/"
 ]
 ignore_names = [
     "*_test.py",

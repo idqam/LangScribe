@@ -3,24 +3,19 @@ from decimal import Decimal
 from enum import IntEnum
 from typing import Any
 
+from Persistence.Enums import SUBSCRIPTION_TIER
 from sqlalchemy import JSON, DateTime, func
 from sqlalchemy import Enum as SQLEnum
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from WebServer.Persistence.Models import Base
-
-
-class TIER(IntEnum):
-    FREE = 0
-    PREMIUM = 1
-    PRO = 2
+from .base import Base
 
 
 class Subscription(Base):
     __tablename__ = "subscriptions"
 
     id: Mapped[int] = mapped_column(primary_key=True)
-    tier: Mapped[TIER] = mapped_column(SQLEnum(TIER), unique=True)
+    tier: Mapped[SUBSCRIPTION_TIER] = mapped_column(SQLEnum(SUBSCRIPTION_TIER), unique=True)
     name: Mapped[str] = mapped_column()
     price: Mapped[Decimal] = mapped_column()
     billing_period_months: Mapped[int] = mapped_column()

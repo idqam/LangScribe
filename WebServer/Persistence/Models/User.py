@@ -1,17 +1,12 @@
 from datetime import datetime
 from enum import IntEnum
 
+from Persistence.Enums import USER_ROLE
 from sqlalchemy import DateTime, ForeignKey, Index, String, UniqueConstraint, func
 from sqlalchemy import Enum as SQLEnum
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from WebServer.Persistence.Models import Base
-
-
-class Role(IntEnum):
-    USER = 0
-    ADMIN = 1
-    # INSTITUION=2
+from .base import Base
 
 
 class User(Base):
@@ -20,8 +15,8 @@ class User(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
     email: Mapped[str] = mapped_column(String(255))
     uuid: Mapped[str] = mapped_column(unique=True)
-    hashed_password: Mapped[str] = mapped_column()  # Remove hash=True, hash before storing
-    role: Mapped[Role] = mapped_column(SQLEnum(Role), default=Role.USER)
+    hashed_password: Mapped[str] = mapped_column()
+    role: Mapped[USER_ROLE] = mapped_column(SQLEnum(USER_ROLE), default=USER_ROLE.USER)
     pfp: Mapped[str | None] = mapped_column()
     day_streak: Mapped[int] = mapped_column(server_default="0")
     subscription_id: Mapped[int] = mapped_column(ForeignKey("subscriptions.id"))

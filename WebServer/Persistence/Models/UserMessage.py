@@ -3,7 +3,7 @@ from typing import Any
 from sqlalchemy import JSON, ForeignKey, Index
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from WebServer.Persistence.Models import Base
+from .base import Base
 
 
 class UserMessage(Base):

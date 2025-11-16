@@ -2,19 +2,12 @@ from datetime import datetime
 from enum import IntEnum
 from typing import Any
 
+from Persistence.Enums import RATE
 from sqlalchemy import JSON, DateTime, ForeignKey, Index, func
 from sqlalchemy import Enum as SQLEnum
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from WebServer.Persistence.Models import Base
-
-
-class RATE(IntEnum):
-    NOVICE = 1
-    BEGINNER = 2
-    COMPETENT = 3
-    PROFICIENT = 4
-    EXPERT = 5
+from .base import Base
 
 
 class Report(Base):

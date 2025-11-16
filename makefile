@@ -6,6 +6,18 @@ RUFF_FORMAT_FLAGS = --quiet
 
 DIRS = WebServer
 
+.PHONY: run-build
+run-build:
+	docker-compose up --build -d
+
+.PHONY: run
+run:
+	docker-compose up -d
+
+.PHONY: stop
+stop:
+	docker-compose stop
+
 .PHONY: format
 format:
 	uv run ruff format $(RUFF_FORMAT_FLAGS) $(DIRS)
@@ -40,12 +52,26 @@ migrate:
 	uv run alembic revision -m "$(msg)" && \
 	rm -f ../.env
 
+.PHONY: migrate-auto
+migrate-auto:
+	ln -sf ../$(ENV) WebServer/.env
+	cd WebServer && uv run alembic revision --autogenerate -m "$(msg)"
+	rm -f WebServer/.env
+
 .PHONY: migrate-up
 migrate-up:
 	ln -sf ../$(ENV) WebServer/.env
 	cd WebServer && uv run alembic upgrade head
 	rm -f WebServer/.env
-	
+
+
+
+.PHONY: migrate-down
+migrate-down:
+	ln -sf ../$(ENV) WebServer/.env
+	cd WebServer && uv run alembic downgrade base
+	rm -f WebServer/.env
+
 .PHONY: migrate-history
 migrate-history:
 	cd WebServer && \
@@ -61,6 +87,7 @@ help:
 	@echo "  pre-commit  			- Format + lint (run before commit)"
 	@echo "  ci          			- Run checks without auto-fix (for CI/CD)"
 	@echo "  migrate msg=/'/'    	- Creates a new migration i.e: make migrate msg=/'new-migration/' "
+	@echo "  migrate-auto msg=/'/'  - Creates a automatically from the models on /Models i.e: make migrate-auto msg=/'new-migration/' "
 	@echo "  migrate-up     		- Upgrades to head "
 	@echo "  migrate-down     		- Goes down one version "
 	@echo "  migrate-history     	- Sees alembic history "
