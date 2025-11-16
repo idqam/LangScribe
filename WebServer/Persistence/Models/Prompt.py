@@ -19,6 +19,7 @@ class Prompt(Base):
         SQLEnum(LANGUAGE_DIFFICULTY),
         default=LANGUAGE_DIFFICULTY.INTERMEDIATE,
     )
+    content: Mapped[dict[str, Any]] = mapped_column(JSON)
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         server_default=func.now(),
