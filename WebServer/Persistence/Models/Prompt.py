@@ -29,5 +29,5 @@ class Prompt(Base):
         server_default=func.now(),
     )
 
-    language: Mapped["Language"] = relationship(back_populates="prompts")  # type: ignore
-    messages: Mapped[list["UserMessage"]] = relationship(back_populates="prompt")  # type: ignore
+    language: Mapped["Language"] = relationship(back_populates="prompts")
+    messages: Mapped[list["UserMessage"]] = relationship(back_populates="prompt")

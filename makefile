@@ -4,7 +4,7 @@ RUFF_CHECK_FLAGS = --quiet
 RUFF_FORMAT_FLAGS = --quiet
 
 
-DIRS = AIWorker WebServer
+DIRS = WebServer
 
 .PHONY: format
 format:

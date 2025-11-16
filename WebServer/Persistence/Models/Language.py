@@ -38,6 +38,6 @@ class Language(Base):
         onupdate=func.now(),
     )
 
-    user_languages: Mapped[list["UserLanguage"]] = relationship(back_populates="language")  # type: ignore
-    prompts: Mapped[list["Prompt"]] = relationship(back_populates="language")  # type: ignore
-    reports: Mapped[list["Report"]] = relationship(back_populates="language")  # type: ignore
+    user_languages: Mapped[list["UserLanguage"]] = relationship(back_populates="language")
+    prompts: Mapped[list["Prompt"]] = relationship(back_populates="language")
+    reports: Mapped[list["Report"]] = relationship(back_populates="language")

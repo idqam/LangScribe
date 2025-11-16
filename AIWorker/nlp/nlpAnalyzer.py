@@ -82,7 +82,7 @@ class NLPAnalyzer:
             return {"message_id": message_id, "report_id": report_id, "analysis": analysis}
 
     async def _get_user_language_id(
-        self, session: AsyncSession, user_id: int, prompt_id: int
+        self, session: AsyncSession, user_id: int, prompt_id: int,
     ) -> int | None:
         """Best-effort resolution:
         - find language_id from prompt
