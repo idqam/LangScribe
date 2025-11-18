@@ -10,9 +10,10 @@ class PROFICIENCY_LEVELS(StrEnum):
     C2 = "C2"
 
 
-class CODE(StrEnum):
-    ENGLISH = "en"
-    SPANISH = "es"
+class CODE(IntEnum):
+    en = 0
+    es = 1
+    
 
 
 class DIFFICULTY(IntEnum):

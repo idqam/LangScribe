@@ -13,10 +13,10 @@ class Language(Base):
     __tablename__ = "languages"
 
     id: Mapped[int] = mapped_column(primary_key=True)
-    code: Mapped[LANGUAGE_CODE] = mapped_column(SQLEnum(LANGUAGE_CODE), unique=True)
+    code: Mapped[str] = mapped_column(unique=True)
     name: Mapped[str] = mapped_column()
     difficulty: Mapped[LANGUAGE_DIFFICULTY] = mapped_column(
-        SQLEnum(LANGUAGE_CODE),
+        SQLEnum(LANGUAGE_DIFFICULTY),
         default=LANGUAGE_DIFFICULTY.INTERMEDIATE,
     )
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
