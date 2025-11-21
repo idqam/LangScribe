@@ -10,7 +10,7 @@ from sqlalchemy.ext.asyncio import create_async_engine
 
 sys.path.append(os.path.join(os.path.dirname(__file__), "..", ".."))
 from WebServer.Persistence.Models import Base
-from WebServer.resources import get_db_url
+from WebServer.Resources import get_db_url
 
 config = context.config
 
