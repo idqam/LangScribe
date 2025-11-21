@@ -1,8 +1,8 @@
-from Persistence.DTOs import UserMessageCreate, UserMessageDelete, UserMessageUpdate
-from Persistence.Models import UserMessage, Prompt
+from Persistence.DTOs import UserMessageCreate
+from Persistence.Models import Prompt, UserMessage
 from Resources import transaction
-from sqlalchemy import delete, insert, select, update
-from loguru import logger
+from sqlalchemy import delete, select
+
 
 async def get_all_usermessages() -> [UserMessage]:
     async with transaction() as session:
@@ -22,12 +22,12 @@ async def create_usermessage(tmp_usermessage: UserMessageCreate) -> UserMessage:
 
         if not prompt:
             raise ValueError("Prompt not found!")
-        
+
         new_usermessage = UserMessage(**tmp_usermessage.model_dump())
         session.add(new_usermessage)
         await session.flush()
         await session.refresh(new_usermessage)
-        
+
     return new_usermessage
 
 

@@ -1,8 +1,8 @@
 from Persistence.DTOs import SubscriptionCreate
 from Persistence.Models import Subscription
 from Resources import transaction
-from sqlalchemy import delete, insert, select, update
-from loguru import logger
+from sqlalchemy import delete, select
+
 
 async def get_all_subscriptions() -> [Subscription]:
     async with transaction() as session:
@@ -17,12 +17,12 @@ async def get_all_subscriptions() -> [Subscription]:
 
 async def create_subscription(tmp_subscription: SubscriptionCreate) -> Subscription:
     async with transaction() as session:
-        
+
         new_subscription = Subscription(**tmp_subscription.model_dump())
         session.add(new_subscription)
         await session.flush()
         await session.refresh(new_subscription)
-        
+
     return new_subscription
 
 

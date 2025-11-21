@@ -1,8 +1,8 @@
-from Persistence.DTOs import PromptCreate, PromptDelete, PromptUpdate
-from Persistence.Models import Prompt, Language
+from Persistence.DTOs import PromptCreate
+from Persistence.Models import Language, Prompt
 from Resources import transaction
-from sqlalchemy import delete, insert, select, update
-from loguru import logger
+from sqlalchemy import delete, select
+
 
 async def get_all_prompts() -> [Prompt]:
     async with transaction() as session:
@@ -22,12 +22,12 @@ async def create_prompt(tmp_prompt: PromptCreate) -> Prompt:
 
         if not language:
             raise ValueError("Language not found!")
-        
+
         new_prompt = Prompt(**tmp_prompt.model_dump())
         session.add(new_prompt)
         await session.flush()
         await session.refresh(new_prompt)
-        
+
     return new_prompt
 
 

@@ -1,7 +1,8 @@
-from fastapi import FastAPI
 import os
-from starlette.middleware.sessions import SessionMiddleware
+
+from fastapi import FastAPI
 from Routers import (
+    auth_router,
     language_router,
     prompt_router,
     report_router,
@@ -9,17 +10,17 @@ from Routers import (
     user_languages_router,
     user_message_router,
     user_router,
-    auth_router
 )
+from starlette.middleware.sessions import SessionMiddleware
 
 app = FastAPI(title="LangScribe API Gateway")
 
 app.add_middleware(
     SessionMiddleware,
-    secret_key=os.getenv("SECRET_KEY"),  
-    max_age=3600,  
-    same_site="lax",  
-    https_only=False  
+    secret_key=os.getenv("SECRET_KEY"),
+    max_age=3600,
+    same_site="lax",
+    https_only=False,
 )
 
 routers = [

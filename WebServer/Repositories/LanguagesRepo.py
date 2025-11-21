@@ -1,8 +1,9 @@
-from Persistence.DTOs import LanguageCreate, LanguageDelete, LanguageUpdate
-from Persistence.Models import Subscription, Language
-from Resources import transaction
-from sqlalchemy import delete, insert, select, update
 from loguru import logger
+from Persistence.DTOs import LanguageCreate, LanguageUpdate
+from Persistence.Models import Language
+from Resources import transaction
+from sqlalchemy import delete, select, update
+
 
 async def get_all_languages() -> [Language]:
     async with transaction() as session:
@@ -59,7 +60,7 @@ async def create_language(tmp_language: LanguageCreate) -> Language:
         session.add(new_language)
         await session.flush()
         await session.refresh(new_language)
-        
+
     return new_language
 
 

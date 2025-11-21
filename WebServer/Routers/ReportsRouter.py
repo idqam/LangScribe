@@ -1,7 +1,13 @@
 from fastapi import APIRouter, HTTPException, status
-from Persistence.DTOs import ReportCreate, ReportDelete, ReportRead, ReportUpdate
-from Repositories import create_report, delete_report, get_all_reports, get_one_report, update_report
 from loguru import logger
+from Persistence.DTOs import ReportCreate, ReportRead, ReportUpdate
+from Repositories import (
+    create_report,
+    delete_report,
+    get_all_reports,
+    get_one_report,
+    update_report,
+)
 
 router = APIRouter(
     prefix="/reports",
@@ -16,7 +22,7 @@ async def read_reports() -> [ReportRead]:
         return reports
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
-    
+
 
 @router.get("/{id}", tags=["reports"], response_model=ReportRead)
 async def read_report(id: int) -> ReportRead:

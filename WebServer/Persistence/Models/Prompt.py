@@ -13,7 +13,7 @@ class Prompt(Base):
     __tablename__ = "prompts"
 
     id: Mapped[int] = mapped_column(primary_key=True)
-    language_id: Mapped[int] = mapped_column(ForeignKey("languages.id"))
+    language_id: Mapped[int] = mapped_column(ForeignKey("languages.id",ondelete="CASCADE"))
     content: Mapped[dict[str, Any]] = mapped_column(JSON)
     difficulty: Mapped[LANGUAGE_DIFFICULTY] = mapped_column(
         SQLEnum(LANGUAGE_DIFFICULTY),

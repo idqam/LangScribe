@@ -1,8 +1,8 @@
-from Persistence.DTOs import UserCreate, UserDelete, UserUpdate
+from Persistence.DTOs import UserCreate, UserUpdate
 from Persistence.Enums import SUBSCRIPTION_TIER
 from Persistence.Models import Subscription, User
 from Resources import transaction
-from sqlalchemy import delete, insert, select, update
+from sqlalchemy import delete, select, update
 
 
 async def get_all_users() -> [User]:
@@ -59,7 +59,7 @@ async def create_user(tmp_user: UserCreate) -> User:
 
 
         res = await session.execute(
-            select(Subscription).where(Subscription.tier == SUBSCRIPTION_TIER.FREE)
+            select(Subscription).where(Subscription.tier == SUBSCRIPTION_TIER.FREE),
         )
         subs_id = res.scalar_one_or_none().id
         if not subs_id:

@@ -1,5 +1,5 @@
 from fastapi import APIRouter, HTTPException, status
-from Persistence.DTOs import PromptCreate, PromptDelete, PromptRead, PromptUpdate
+from Persistence.DTOs import PromptCreate, PromptRead
 from Repositories import create_prompt, delete_prompt, get_all_prompts
 
 router = APIRouter(

@@ -1,7 +1,13 @@
 from fastapi import APIRouter, HTTPException, status
-from Persistence.DTOs import LanguageCreate, LanguageDelete, LanguageRead, LanguageUpdate
-from Repositories import create_language, delete_language, get_all_languages, get_one_language, update_language
 from loguru import logger
+from Persistence.DTOs import LanguageCreate, LanguageRead, LanguageUpdate
+from Repositories import (
+    create_language,
+    delete_language,
+    get_all_languages,
+    get_one_language,
+    update_language,
+)
 
 router = APIRouter(
     prefix="/languages",
@@ -16,7 +22,7 @@ async def read_languages() -> [LanguageRead]:
         return languages
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
-    
+
 
 @router.get("/{id}", tags=["languages"], response_model=LanguageRead)
 async def read_language(id: int) -> LanguageRead:

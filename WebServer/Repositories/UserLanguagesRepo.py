@@ -1,8 +1,8 @@
 from Persistence.DTOs import UserLanguageCreate
-from Persistence.Models import UserLanguage, User, Language
+from Persistence.Models import Language, User, UserLanguage
 from Resources import transaction
-from sqlalchemy import delete, insert, select, update
-from loguru import logger
+from sqlalchemy import delete, select
+
 
 async def get_all_user_languages() -> [UserLanguage]:
     async with transaction() as session:
@@ -24,12 +24,12 @@ async def create_user_languages(tmp_user_languages: UserLanguageCreate) -> UserL
 
         if not language or not user:
             raise ValueError("User or Language not found!")
-        
+
         new_user_languages = UserLanguage(**tmp_user_languages.model_dump())
         session.add(new_user_languages)
         await session.flush()
         await session.refresh(new_user_languages)
-        
+
     return new_user_languages
 
 

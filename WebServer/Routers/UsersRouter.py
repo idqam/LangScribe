@@ -1,5 +1,5 @@
 from fastapi import APIRouter, HTTPException, status
-from Persistence.DTOs import UserCreate, UserDelete, UserRead, UserUpdate
+from Persistence.DTOs import UserCreate, UserRead, UserUpdate
 from Repositories import create_user, delete_user, get_all_users, get_one_user, update_user
 
 router = APIRouter(
@@ -15,7 +15,7 @@ async def read_users() -> [UserRead]:
         return users
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
-    
+
 
 @router.get("/{id}", tags=["users"], response_model=UserRead)
 async def read_user(id: int) -> UserRead:
