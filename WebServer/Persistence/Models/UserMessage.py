@@ -10,7 +10,7 @@ class UserMessage(Base):
     __tablename__ = "user_messages"
 
     id: Mapped[int] = mapped_column(primary_key=True)
-    user_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"))
     prompt_id: Mapped[int] = mapped_column(ForeignKey("prompts.id"))
     content: Mapped[dict[str, Any]] = mapped_column(JSON)
 

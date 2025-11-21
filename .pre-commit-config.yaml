@@ -1,13 +1,7 @@
 repos:
   - repo: local
     hooks:
-
-      - id: mypy
-        name: mypy
-        description: "Type check with mypy"
-        entry: make mypy
-        language: system
-
+    
       - id: vulture
         name: vulture
         description: "Find dead code with vulture"

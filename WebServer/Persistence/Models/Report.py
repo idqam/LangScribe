@@ -14,8 +14,8 @@ class Report(Base):
     __tablename__ = "reports"
 
     id: Mapped[int] = mapped_column(primary_key=True)
-    user_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
-    language_id: Mapped[int] = mapped_column(ForeignKey("languages.id"))
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"))
+    language_id: Mapped[int] = mapped_column(ForeignKey("languages.id", ondelete="CASCADE"))
     user_message_id: Mapped[int] = mapped_column(ForeignKey("user_messages.id"))
     content: Mapped[dict[str, Any]] = mapped_column(JSON)
     rating: Mapped[RATE] = mapped_column(SQLEnum(RATE))

@@ -1,8 +1,8 @@
-from Persistence.DTOs import ReportCreate, ReportDelete, ReportUpdate
-from Persistence.Models import User, Report, Language
+from Persistence.DTOs import ReportCreate, ReportUpdate
+from Persistence.Models import Language, Report, User
 from Resources import transaction
-from sqlalchemy import delete, insert, select, update
-from loguru import logger
+from sqlalchemy import delete, select, update
+
 
 async def get_all_reports() -> [Report]:
     async with transaction() as session:
@@ -59,7 +59,7 @@ async def create_report(tmp_report: ReportCreate) -> Report:
         session.add(new_report)
         await session.flush()
         await session.refresh(new_report)
-        
+
     return new_report
 
 
