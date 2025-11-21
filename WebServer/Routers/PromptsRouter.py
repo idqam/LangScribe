@@ -1,4 +1,6 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException, status
+from Persistence.DTOs import PromptCreate, PromptDelete, PromptRead, PromptUpdate
+from Repositories import create_prompt, delete_prompt, get_all_prompts
 
 router = APIRouter(
     prefix="/prompts",
@@ -6,21 +8,40 @@ router = APIRouter(
 )
 
 
-@router.get("/prompts/", tags=["prompts"])
-async def read_prompts():
-    return [{"username": "Rick"}, {"username": "Morty"}]
+@router.get("/", tags=["prompts"], response_model=list[PromptRead])
+async def read_prompts() -> [PromptRead]:
+    try:
+        prompts = await get_all_prompts()
+        return prompts
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
+@router.post(
+    "/",
+    tags=["prompts"],
+    response_model=PromptRead,
+    response_model_exclude={"hashed_password"},
+    status_code=status.HTTP_201_CREATED,
+)
+async def create_new_prompt(prompt_dto: PromptCreate) -> PromptRead:
+    try:
+        prompt = await create_prompt(prompt_dto)
+        return prompt
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=str(e),
+        )
 
-@router.post("/prompts/", tags=["prompts"])
-async def create_prompts():
-    return {"username": "fakecurrentuser"}
+@router.delete("/{id}", tags=["prompts"], response_model=bool)
+async def delete_existing_prompt(id: int):
 
+    try:
+        success = await delete_prompt(id)
+        return bool(success)
 
-@router.put("/prompts/{prompt}", tags=["prompts"])
-async def update_prompts(username: str):
-    return {"username": username}
-
-
-@router.delete("/prompts/{prompts}", tags=["prompts"])
-async def delete_prompts(username: str):
-    return {"username": username}
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=str(e),
+        )

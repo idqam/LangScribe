@@ -1,5 +1,4 @@
 from Persistence.DTOs import LanguageCreate, LanguageDelete, LanguageUpdate
-from Persistence.Enums import LANGUAGE_CODE
 from Persistence.Models import Subscription, Language
 from Resources import transaction
 from sqlalchemy import delete, insert, select, update
@@ -56,18 +55,12 @@ async def create_language(tmp_language: LanguageCreate) -> Language:
         if language.one_or_none():
             raise ValueError("Language already registered")
 
-        logger.error("wtf")
-        language_data = tmp_language.model_dump()
-        language_data["code"] = language_data["code"].value
-        logger.error(f"language dict: {language_data}")
-       
-        res = await session.execute(
-            insert(Language).values(**language_data)
-        )
-
-    
-
-    return res.scalar_one_or_none()
+        new_language = Language(**tmp_language.model_dump())
+        session.add(new_language)
+        await session.flush()
+        await session.refresh(new_language)
+        
+    return new_language
 
 
 async def delete_language(id: int) -> bool:

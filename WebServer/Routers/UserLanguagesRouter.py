@@ -1,4 +1,6 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException, status
+from Persistence.DTOs import UserLanguageCreate, UserLanguageDelete, UserLanguageRead, UserLanguageUpdate
+from Repositories import create_user_languages, delete_user_languages, get_all_user_languages
 
 router = APIRouter(
     prefix="/user_languages",
@@ -6,21 +8,40 @@ router = APIRouter(
 )
 
 
-@router.get("/user_languages/", tags=["user_languages"])
-async def read_user_languages():
-    return [{"username": "Rick"}, {"username": "Morty"}]
+@router.get("/", tags=["user_languages"], response_model=list[UserLanguageRead])
+async def read_user_languages() -> [UserLanguageRead]:
+    try:
+        user_languages = await get_all_user_languages()
+        return user_languages
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
+@router.post(
+    "/",
+    tags=["user_languages"],
+    response_model=UserLanguageRead,
+    response_model_exclude={"hashed_password"},
+    status_code=status.HTTP_201_CREATED,
+)
+async def create_new_user_language(user_language_dto: UserLanguageCreate) -> UserLanguageRead:
+    try:
+        user_language = await create_user_languages(user_language_dto)
+        return user_language
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=str(e),
+        )
 
-@router.post("/user_languages/", tags=["user_languages"])
-async def create_user():
-    return {"username": "fakecurrentuser"}
+@router.delete("/{id}", tags=["user_languages"], response_model=bool)
+async def delete_existing_user_language(id: int):
 
+    try:
+        success = await delete_user_languages(id)
+        return bool(success)
 
-@router.put("/user_languages/{username}", tags=["user_languages"])
-async def update_user(username: str):
-    return {"username": username}
-
-
-@router.delete("/user_languages/{username}", tags=["user_languages"])
-async def delete_user(username: str):
-    return {"username": username}
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=str(e),
+        )

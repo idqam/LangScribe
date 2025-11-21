@@ -1,67 +1,43 @@
 from fastapi import APIRouter, HTTPException, status
-from Persistence.DTOs import LanguageCreate, LanguageDelete, LanguageRead, LanguageUpdate
-from Repositories import create_language, delete_language, get_all_languages, get_one_language, update_language
+from Persistence.DTOs import UserMessageCreate, UserMessageDelete, UserMessageRead, UserMessageUpdate
+from Repositories import create_usermessage, delete_usermessage, get_all_usermessages
 
 router = APIRouter(
-    prefix="/languages",
-    tags=["languages"],
+    prefix="/usermessages",
+    tags=["usermessages"],
 )
 
 
-@router.get("/", tags=["languages"], response_model=list[LanguageRead])
-async def read_languages() -> [LanguageRead]:
+@router.get("/", tags=["usermessages"], response_model=list[UserMessageRead])
+async def read_usermessages() -> [UserMessageRead]:
     try:
-        languages = await get_all_languages()
-        return languages
+        usermessages = await get_all_usermessages()
+        return usermessages
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
-    
-
-@router.get("/{id}", tags=["languages"], response_model=LanguageRead)
-async def read_language(id: int) -> LanguageRead:
-    try:
-        language = await get_one_language(id, email= None)
-        return language
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
-
 
 @router.post(
     "/",
-    tags=["languages"],
-    response_model=LanguageRead,
+    tags=["usermessages"],
+    response_model=UserMessageRead,
     response_model_exclude={"hashed_password"},
     status_code=status.HTTP_201_CREATED,
 )
-async def create_new_language(language_dto: LanguageCreate) -> LanguageRead:
+async def create_new_usermessage(usermessage_dto: UserMessageCreate) -> UserMessageRead:
     try:
-        language = await create_language(language_dto)
-        return language
+        usermessage = await create_usermessage(usermessage_dto)
+        return usermessage
     except Exception as e:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=str(e),
         )
 
-
-@router.patch("/{id}", tags=["languages"], response_model=bool)
-async def update_existing_language(id: int, language_dto: LanguageUpdate):
-    try:
-        success = await update_language(id, language_dto)
-        return bool(success)
-
-    except Exception as e:
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=str(e),
-        )
-
-
-@router.delete("/{id}", tags=["languages"], response_model=bool)
-async def delete_existing_language(id: int):
+@router.delete("/{id}", tags=["usermessages"], response_model=bool)
+async def delete_existing_usermessage(id: int):
 
     try:
-        success = await delete_language(id)
+        success = await delete_usermessage(id)
         return bool(success)
 
     except Exception as e:

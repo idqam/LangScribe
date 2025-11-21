@@ -1,11 +1,11 @@
 from datetime import datetime
 
-from Persistence.Enums import LANGUAGE_CODE, LANGUAGE_DIFFICULTY
+from Persistence.Enums import LANGUAGE_DIFFICULTY
 from pydantic import BaseModel, ConfigDict
 
 
 class LanguageCreate(BaseModel):
-    code: str
+    code_short: str
     name: str
     difficulty: LANGUAGE_DIFFICULTY | None = None
 
@@ -19,7 +19,7 @@ class LanguageUpdate(BaseModel):
 class LanguageRead(BaseModel):
 
     id: int
-    code: LANGUAGE_CODE
+    code_short: str
     name: str
     difficulty: LANGUAGE_DIFFICULTY
     created_at: datetime

@@ -26,6 +26,11 @@ dependencies = [
     "psycopg2-binary>=2.9.11",
     "greenlet>=3.2.4",
     "loguru>=0.7.3",
+    "google-auth>=2.43.0",
+    "google-auth-oauthlib>=1.2.2",
+    "google-auth-httplib2>=0.2.1",
+    "authlib>=1.6.5",
+    "itsdangerous>=2.2.0",
 ]
 
 [dependency-groups]

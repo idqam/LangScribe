@@ -1,7 +1,7 @@
 from datetime import datetime
 from enum import IntEnum
 
-from Persistence.Enums import LANGUAGE_CODE, LANGUAGE_DIFFICULTY
+from Persistence.Enums import LANGUAGE_DIFFICULTY
 from sqlalchemy import DateTime, func
 from sqlalchemy import Enum as SQLEnum
 from sqlalchemy.orm import Mapped, mapped_column, relationship
@@ -13,7 +13,7 @@ class Language(Base):
     __tablename__ = "languages"
 
     id: Mapped[int] = mapped_column(primary_key=True)
-    code: Mapped[str] = mapped_column(unique=True)
+    code_short: Mapped[str] = mapped_column(unique=True)
     name: Mapped[str] = mapped_column()
     difficulty: Mapped[LANGUAGE_DIFFICULTY] = mapped_column(
         SQLEnum(LANGUAGE_DIFFICULTY),
