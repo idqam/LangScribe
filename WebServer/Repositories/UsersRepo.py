@@ -80,7 +80,7 @@ async def create_user(tmp_user: UserCreate) -> User:
 
 async def delete_user(id: int) -> bool:
     async with transaction() as session:
-        user = await session.get(User,id)
+        user = await session.get(User, id)
 
         if not user:
             raise ValueError("User not found")
@@ -102,5 +102,5 @@ async def get_languages(id: int) -> list[LanguageRead]:
 
 async def get_reports(id: int) -> list[ReportRead]:
     async with transaction() as session:
-        user = await session.get(User,id)
+        user = await session.get(User, id)
         return [ReportRead.model_validate(report) for report in user.reports]
