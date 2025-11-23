@@ -55,6 +55,7 @@ def authorize_user_operation(
 
 def admin_required(user: UserTokenPayload = Depends(verify_token)):
     authorize_user_operation(user, required_role=USER_ROLE.ADMIN)
+    return user
 
 
 def self_user(user: UserTokenPayload, current_user: UserTokenPayload):
