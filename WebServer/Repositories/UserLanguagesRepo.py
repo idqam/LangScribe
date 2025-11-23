@@ -1,6 +1,6 @@
 from Persistence.DTOs import UserLanguageCreate
 from Persistence.Models import Language, User, UserLanguage
-from Resources import transaction
+from Resources import self_user, transaction
 from sqlalchemy import delete, select
 
 
@@ -33,9 +33,10 @@ async def create_user_languages(tmp_user_languages: UserLanguageCreate) -> UserL
     return new_user_languages
 
 
-async def delete_user_languages(id: int) -> bool:
+async def delete_user_languages(id: int,user_id:int) -> bool:
     async with transaction() as session:
         user_languages = await session.get(UserLanguage,id)
+
 
         if not user_languages:
             raise ValueError("UserLanguage not found")

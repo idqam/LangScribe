@@ -31,11 +31,13 @@ class User(Base):
     subscription: Mapped["Subscription"] = relationship(back_populates="users")
     user_languages: Mapped[list["UserLanguage"]] = relationship(
         back_populates="user",
-        cascade='all, delete-orphan'
+        cascade="all, delete-orphan",
+        lazy='selectin'
     )
     reports: Mapped[list["Report"]] = relationship(
         back_populates="user",
-        cascade= 'all, delete-orphan'
+        cascade= "all, delete-orphan",
+        lazy='selectin'
     )
 
     __table_args__ = (

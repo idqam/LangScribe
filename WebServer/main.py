@@ -2,6 +2,7 @@ import os
 
 from fastapi import FastAPI
 from Routers import (
+    admin_users_router,
     auth_router,
     language_router,
     prompt_router,
@@ -9,7 +10,7 @@ from Routers import (
     subscription_router,
     user_languages_router,
     user_message_router,
-    user_router,
+    users_router,
 )
 from starlette.middleware.sessions import SessionMiddleware
 
@@ -25,7 +26,8 @@ app.add_middleware(
 
 routers = [
     auth_router,
-    user_router,
+    admin_users_router,
+    users_router,
     user_message_router,
     user_languages_router,
     report_router,

@@ -1,53 +1,28 @@
-from fastapi import APIRouter, HTTPException, status
-from Persistence.DTOs import UserCreate, UserRead, UserUpdate
-from Repositories import create_user, delete_user, get_all_users, get_one_user, update_user
+from fastapi import APIRouter, Depends, HTTPException, status
+from Persistence.DTOs import UserCreate, UserRead, UserUpdate, LanguageRead, ReportRead
+from Repositories import delete_user, get_one_user, update_user, get_languages, get_reports
+from Resources import verify_token
 
 router = APIRouter(
-    prefix="/users",
+    prefix="/users/me",
     tags=["users"],
 )
 
 
-@router.get("/", tags=["users"], response_model=list[UserRead])
-async def read_users() -> [UserRead]:
+@router.get("/", response_model=UserRead)
+async def get_me(token_data: dict = Depends(verify_token)):
     try:
-        users = await get_all_users()
-        return users
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
-
-
-@router.get("/{id}", tags=["users"], response_model=UserRead)
-async def read_user(id: int) -> UserRead:
-    try:
-        user = await get_one_user(id, email= None)
-        return user
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
-
-
-@router.post(
-    "/",
-    tags=["users"],
-    response_model=UserRead,
-    response_model_exclude={"hashed_password"},
-    status_code=status.HTTP_201_CREATED,
-)
-async def create_new_user(user_dto: UserCreate) -> UserRead:
-    try:
-        user = await create_user(user_dto)
-        return user
+        return await get_one_user(token_data.id, token_data.email)
     except Exception as e:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=str(e),
         )
 
-
-@router.patch("/{id}", tags=["users"], response_model=bool)
-async def update_existing_user(id: int, user_dto: UserUpdate):
+@router.patch("/update")
+async def update_me(update_data: UserUpdate,token_data: UserRead = Depends(verify_token)):
     try:
-        success = await update_user(id, user_dto)
+        success = await update_user(token_data.id, update_data)
         return bool(success)
 
     except Exception as e:
@@ -56,14 +31,31 @@ async def update_existing_user(id: int, user_dto: UserUpdate):
             detail=str(e),
         )
 
-
-@router.delete("/{id}", tags=["users"], response_model=bool)
-async def delete_existing_user(id: int):
-
+@router.delete("/delete")
+async def delete_me(token_data: UserRead = Depends(verify_token)):
     try:
-        success = await delete_user(id)
+        success = await delete_user(token_data.id)
         return bool(success)
 
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=str(e),
+        )
+@router.get('/languages', response_model=list[LanguageRead])
+async def get_my_languages(token_data: UserRead = Depends(verify_token)):
+    try:
+        return await get_languages(token_data.id)
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=str(e),
+        )
+
+@router.get('/reports', response_model=list[ReportRead])
+async def get_my_reports(token_data: UserRead = Depends(verify_token)):
+    try:
+        return await get_reports(token_data.id)
     except Exception as e:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,

@@ -7,6 +7,7 @@ from fastapi import APIRouter, HTTPException, Request, status
 from Persistence.DTOs import UserCreate, UserRead
 from Persistence.Enums import USER_ROLE
 from Repositories import create_user, delete_user, get_all_users, get_one_user, update_user
+from Resources import create_token
 
 load_dotenv()
 
@@ -28,8 +29,8 @@ async def auth_google():
     google_auth_url = f"https://accounts.google.com/o/oauth2/v2/auth?{urlencode(params)}"
     return {"url": google_auth_url}
 
-@router.get("/google/callback", response_model=UserRead)
-async def call_back(request: Request):
+@router.get("/google/callback")
+async def call_back(request: Request) -> str:
     """Handle Google OAuth callback and create/retrieve user"""
     try:
         # Get authorization code from query params
@@ -70,39 +71,37 @@ async def call_back(request: Request):
             )
             user_info = userinfo_response.json()
 
-        # Extract user data
         google_id = user_info.get("id")
         google_email = user_info.get("email")
         picture = user_info.get("picture", "")
 
-        # Validate required fields
         if not google_email or not google_id:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail="Failed to retrieve required user information from Google",
             )
 
-        # Check if user already exists
         this_user = await get_one_user(tmp_id=None, email=google_email)
 
-        # Create new user if doesn't exist
         if not this_user:
             dto = UserCreate(
                 uuid=google_id,
                 email=google_email,
-                hashed_password="",  # Google users don't need password
+                hashed_password="",
                 pfp=picture,
                 role=USER_ROLE.USER,
             )
             this_user = await create_user(dto)
 
-        return this_user
+        user_read = UserRead.model_validate(this_user)
+
+        return create_token(user_read)
 
     except HTTPException:
-        # Re-raise HTTP exceptions as-is
+
         raise
     except Exception as e:
-        # Catch any other errors and return 500
+
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Authentication failed: {e!s}",

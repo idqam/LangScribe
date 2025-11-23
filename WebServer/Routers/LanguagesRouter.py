@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status
 from loguru import logger
 from Persistence.DTOs import LanguageCreate, LanguageRead, LanguageUpdate
 from Repositories import (
@@ -8,6 +8,7 @@ from Repositories import (
     get_one_language,
     update_language,
 )
+from Resources import admin_required, verify_token
 
 router = APIRouter(
     prefix="/languages",
@@ -16,7 +17,7 @@ router = APIRouter(
 
 
 @router.get("/", tags=["languages"], response_model=list[LanguageRead])
-async def read_languages() -> [LanguageRead]:
+async def read_languages(token_data: dict = Depends(verify_token)) -> [LanguageRead]:
     try:
         languages = await get_all_languages()
         return languages
@@ -25,7 +26,7 @@ async def read_languages() -> [LanguageRead]:
 
 
 @router.get("/{id}", tags=["languages"], response_model=LanguageRead)
-async def read_language(id: int) -> LanguageRead:
+async def read_language(id: int, token_data: dict = Depends(verify_token)) -> LanguageRead:
     try:
         language = await get_one_language(id, email= None)
         return language
@@ -39,7 +40,7 @@ async def read_language(id: int) -> LanguageRead:
     response_model=LanguageRead,
     status_code=status.HTTP_201_CREATED,
 )
-async def create_new_language(language_dto: LanguageCreate) -> LanguageRead:
+async def create_new_language(language_dto: LanguageCreate, _ : dict = Depends(admin_required)) -> LanguageRead:
     try:
         logger.error("router")
         language = await create_language(language_dto)
@@ -52,7 +53,7 @@ async def create_new_language(language_dto: LanguageCreate) -> LanguageRead:
 
 
 @router.patch("/{id}", tags=["languages"], response_model=bool)
-async def update_existing_language(id: int, language_dto: LanguageUpdate):
+async def update_existing_language(id: int, language_dto: LanguageUpdate, token_data: dict = Depends(admin_required)):
     try:
         success = await update_language(id, language_dto)
         return bool(success)
@@ -65,7 +66,7 @@ async def update_existing_language(id: int, language_dto: LanguageUpdate):
 
 
 @router.delete("/{id}", tags=["languages"], response_model=bool)
-async def delete_existing_language(id: int):
+async def delete_existing_language(id: int, token_data: dict = Depends(admin_required)):
 
     try:
         success = await delete_language(id)

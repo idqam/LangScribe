@@ -24,7 +24,7 @@ class UserLanguage(Base):
     )
 
     user: Mapped["User"] = relationship(back_populates="user_languages")
-    language: Mapped["Language"] = relationship(back_populates="user_languages")
+    language: Mapped["Language"] = relationship(back_populates="user_languages", lazy='selectin' )
 
     __table_args__ = (
         UniqueConstraint("user_id", "language_id", name="uq_user_language"),
