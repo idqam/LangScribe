@@ -1,9 +1,10 @@
-from fastapi import APIRouter, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status
 from Persistence.DTOs import (
     UserMessageCreate,
     UserMessageRead,
 )
 from Repositories import create_usermessage, delete_usermessage, get_all_usermessages
+from Resources import admin_required, verify_token
 
 router = APIRouter(
     prefix="/usermessages",
@@ -12,7 +13,7 @@ router = APIRouter(
 
 
 @router.get("/", tags=["usermessages"], response_model=list[UserMessageRead])
-async def read_usermessages() -> [UserMessageRead]:
+async def read_usermessages(token_data: dict = Depends(admin_required)) -> [UserMessageRead]:
     try:
         usermessages = await get_all_usermessages()
         return usermessages
@@ -26,7 +27,10 @@ async def read_usermessages() -> [UserMessageRead]:
     response_model_exclude={"hashed_password"},
     status_code=status.HTTP_201_CREATED,
 )
-async def create_new_usermessage(usermessage_dto: UserMessageCreate) -> UserMessageRead:
+async def create_new_usermessage(
+    usermessage_dto: UserMessageCreate,
+    token_data: dict = Depends(verify_token),
+) -> UserMessageRead:
     try:
         usermessage = await create_usermessage(usermessage_dto)
         return usermessage
@@ -37,8 +41,7 @@ async def create_new_usermessage(usermessage_dto: UserMessageCreate) -> UserMess
         )
 
 @router.delete("/{id}", tags=["usermessages"], response_model=bool)
-async def delete_existing_usermessage(id: int):
-
+async def delete_existing_usermessage(id: int, token_data: dict = Depends(admin_required)):
     try:
         success = await delete_usermessage(id)
         return bool(success)

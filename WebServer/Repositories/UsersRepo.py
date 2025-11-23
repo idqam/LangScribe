@@ -1,9 +1,9 @@
-from Persistence.DTOs import UserCreate, UserUpdate
+from Persistence.DTOs import UserCreate, UserUpdate, LanguageRead, ReportRead
 from Persistence.Enums import SUBSCRIPTION_TIER
-from Persistence.Models import Subscription, User
+from Persistence.Models import Subscription, User, Language, Report
 from Resources import transaction
 from sqlalchemy import delete, select, update
-
+import asyncio
 
 async def get_all_users() -> [User]:
     async with transaction() as session:
@@ -92,3 +92,13 @@ async def delete_user(id: int) -> bool:
 
 
     return res.rowcount
+
+async def get_languages(id: int) -> list[LanguageRead]:
+    async with transaction() as session:
+        user = await session.get(User, id)
+        return [LanguageRead.model_validate(ul.language) for ul in user.user_languages]
+    
+async def get_reports(id: int) -> list[ReportRead]:
+    async with transaction() as session:
+        user = await session.get(User,id)
+        return [ReportRead.model_validate(report) for report in user.reports]
