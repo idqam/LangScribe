@@ -1,9 +1,11 @@
-from Persistence.DTOs import UserCreate, UserUpdate, LanguageRead, ReportRead
+import asyncio
+
+from Persistence.DTOs import LanguageRead, ReportRead, UserCreate, UserUpdate
 from Persistence.Enums import SUBSCRIPTION_TIER
-from Persistence.Models import Subscription, User, Language, Report
+from Persistence.Models import Language, Report, Subscription, User
 from Resources import transaction
 from sqlalchemy import delete, select, update
-import asyncio
+
 
 async def get_all_users() -> [User]:
     async with transaction() as session:
@@ -57,7 +59,6 @@ async def create_user(tmp_user: UserCreate) -> User:
         if user.one_or_none():
             raise ValueError("User already registered")
 
-
         res = await session.execute(
             select(Subscription).where(Subscription.tier == SUBSCRIPTION_TIER.FREE),
         )
@@ -78,7 +79,7 @@ async def create_user(tmp_user: UserCreate) -> User:
 
 async def delete_user(id: int) -> bool:
     async with transaction() as session:
-        user = await session.get(User,id)
+        user = await session.get(User, id)
 
         if not user:
             raise ValueError("User not found")
@@ -90,15 +91,16 @@ async def delete_user(id: int) -> bool:
         if not res.rowcount:
             raise ValueError("No rows were affected")
 
-
     return res.rowcount
+
 
 async def get_languages(id: int) -> list[LanguageRead]:
     async with transaction() as session:
         user = await session.get(User, id)
         return [LanguageRead.model_validate(ul.language) for ul in user.user_languages]
-    
+
+
 async def get_reports(id: int) -> list[ReportRead]:
     async with transaction() as session:
-        user = await session.get(User,id)
+        user = await session.get(User, id)
         return [ReportRead.model_validate(report) for report in user.reports]

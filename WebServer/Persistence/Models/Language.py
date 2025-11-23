@@ -26,6 +26,12 @@ class Language(Base):
         onupdate=func.now(),
     )
 
-    user_languages: Mapped[list["UserLanguage"]] = relationship(back_populates="language", cascade="all, delete-orphan")
-    prompts: Mapped[list["Prompt"]] = relationship(back_populates="language", cascade="all, delete-orphan")
-    reports: Mapped[list["Report"]] = relationship(back_populates="language",cascade="all, delete-orphan")
+    user_languages: Mapped[list["UserLanguage"]] = relationship(
+        back_populates="language", cascade="all, delete-orphan"
+    )
+    prompts: Mapped[list["Prompt"]] = relationship(
+        back_populates="language", cascade="all, delete-orphan"
+    )
+    reports: Mapped[list["Report"]] = relationship(
+        back_populates="language", cascade="all, delete-orphan"
+    )

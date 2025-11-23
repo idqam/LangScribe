@@ -10,7 +10,6 @@ async def get_all_user_languages() -> [UserLanguage]:
             select(UserLanguage),
         )
 
-
         user_languages = res.scalars().all()
 
     return user_languages
@@ -18,8 +17,7 @@ async def get_all_user_languages() -> [UserLanguage]:
 
 async def create_user_languages(tmp_user_languages: UserLanguageCreate) -> UserLanguage:
     async with transaction() as session:
-
-        language = await session.get(Language,tmp_user_languages.language_id)
+        language = await session.get(Language, tmp_user_languages.language_id)
         user = await session.get(User, tmp_user_languages.user_id)
 
         if not language or not user:
@@ -33,10 +31,9 @@ async def create_user_languages(tmp_user_languages: UserLanguageCreate) -> UserL
     return new_user_languages
 
 
-async def delete_user_languages(id: int,user_id:int) -> bool:
+async def delete_user_languages(id: int, user_id: int) -> bool:
     async with transaction() as session:
-        user_languages = await session.get(UserLanguage,id)
-
+        user_languages = await session.get(UserLanguage, id)
 
         if not user_languages:
             raise ValueError("UserLanguage not found")
@@ -47,6 +44,5 @@ async def delete_user_languages(id: int,user_id:int) -> bool:
 
         if not res.rowcount:
             raise ValueError("No rows were affected")
-
 
     return res.rowcount

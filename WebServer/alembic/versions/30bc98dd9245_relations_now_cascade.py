@@ -5,6 +5,7 @@ Revises: 86c7314e336c
 Create Date: 2025-11-21 08:33:08.000164
 
 """
+
 from collections.abc import Sequence
 from typing import Union
 
@@ -39,7 +40,6 @@ def upgrade() -> None:
         ["language_id"],
         ["id"],
         ondelete="CASCADE",
-
     )
 
     # Drop and recreate foreign key for user_languages table

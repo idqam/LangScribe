@@ -5,7 +5,7 @@ from .SubscriptionDtos import (
     SubscriptionCreate,
     SubscriptionRead,
 )
-from .UserDtos import UserCreate, UserDelete, UserRead, UserUpdate
+from .UserDtos import UserCreate, UserDelete, UserRead, UserTokenPayload, UserUpdate
 from .UserLanguagesDtos import (
     UserLanguageCreate,
     UserLanguageDelete,

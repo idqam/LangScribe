@@ -34,3 +34,13 @@ class UserRead(BaseModel):
 
 class UserDelete(BaseModel):
     id: int
+
+
+class UserTokenPayload(BaseModel):
+    """Minimal user data for JWT token encoding - only essential fields."""
+
+    id: int
+    email: str
+    role: USER_ROLE
+
+    model_config = ConfigDict(from_attributes=True)

@@ -5,6 +5,7 @@ Revises: d04863a598b5
 Create Date: 2025-11-17 11:29:49.634847
 
 """
+
 from collections.abc import Sequence
 from typing import Union
 
@@ -16,6 +17,7 @@ revision: str = "f7ca6f9f5035"
 down_revision: str | Sequence[str] | None = "d04863a598b5"
 branch_labels: str | Sequence[str] | None = None
 depends_on: str | Sequence[str] | None = None
+
 
 def upgrade():
     # 1. Create NEW enum type
@@ -30,6 +32,7 @@ def upgrade():
         ALTER COLUMN difficulty TYPE INTEGER
         USING difficulty::integer
     """)
+
 
 def downgrade() -> None:
     """Downgrade schema."""

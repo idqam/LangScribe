@@ -17,7 +17,6 @@ async def get_all_subscriptions() -> [Subscription]:
 
 async def create_subscription(tmp_subscription: SubscriptionCreate) -> Subscription:
     async with transaction() as session:
-
         new_subscription = Subscription(**tmp_subscription.model_dump())
         session.add(new_subscription)
         await session.flush()
@@ -28,7 +27,7 @@ async def create_subscription(tmp_subscription: SubscriptionCreate) -> Subscript
 
 async def delete_subscription(id: int) -> bool:
     async with transaction() as session:
-        subscription = await session.get(Subscription,id)
+        subscription = await session.get(Subscription, id)
 
         if not subscription:
             raise ValueError("Subscription not found")
@@ -39,6 +38,5 @@ async def delete_subscription(id: int) -> bool:
 
         if not res.rowcount:
             raise ValueError("No rows were affected")
-
 
     return res.rowcount

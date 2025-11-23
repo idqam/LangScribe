@@ -17,8 +17,7 @@ async def get_all_prompts() -> [Prompt]:
 
 async def create_prompt(tmp_prompt: PromptCreate) -> Prompt:
     async with transaction() as session:
-
-        language = await session.get(Language,tmp_prompt.language_id)
+        language = await session.get(Language, tmp_prompt.language_id)
 
         if not language:
             raise ValueError("Language not found!")
@@ -33,7 +32,7 @@ async def create_prompt(tmp_prompt: PromptCreate) -> Prompt:
 
 async def delete_prompt(id: int) -> bool:
     async with transaction() as session:
-        prompt = await session.get(Prompt,id)
+        prompt = await session.get(Prompt, id)
 
         if not prompt:
             raise ValueError("Prompt not found")
@@ -44,6 +43,5 @@ async def delete_prompt(id: int) -> bool:
 
         if not res.rowcount:
             raise ValueError("No rows were affected")
-
 
     return res.rowcount

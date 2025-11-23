@@ -16,6 +16,7 @@ router = APIRouter(
     tags=["auth", "users"],
 )
 
+
 @router.get("/google")
 async def auth_google():
     """Generate Google OAuth URL for frontend to redirect to"""
@@ -28,6 +29,7 @@ async def auth_google():
     }
     google_auth_url = f"https://accounts.google.com/o/oauth2/v2/auth?{urlencode(params)}"
     return {"url": google_auth_url}
+
 
 @router.get("/google/callback")
 async def call_back(request: Request) -> str:
@@ -98,10 +100,8 @@ async def call_back(request: Request) -> str:
         return create_token(user_read)
 
     except HTTPException:
-
         raise
     except Exception as e:
-
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Authentication failed: {e!s}",

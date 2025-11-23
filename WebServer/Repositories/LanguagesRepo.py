@@ -18,7 +18,6 @@ async def get_all_languages() -> [Language]:
 
 async def get_one_language(tmp_id: int | None) -> Language:
     async with transaction() as session:
-
         language = await session.execute(
             select(Language).where(Language.id == tmp_id),
         )
@@ -37,7 +36,9 @@ async def update_language(tmp_id: int, tmp_language: LanguageUpdate) -> Language
             raise ValueError("Language not found")
 
         res = await session.execute(
-            update(Language).where(Language.id == tmp_id).values(**tmp_language.model_dump(exclude_unset=True)),
+            update(Language)
+            .where(Language.id == tmp_id)
+            .values(**tmp_language.model_dump(exclude_unset=True)),
         )
 
         if res.rowcount == 0:
@@ -48,7 +49,6 @@ async def update_language(tmp_id: int, tmp_language: LanguageUpdate) -> Language
 
 async def create_language(tmp_language: LanguageCreate) -> Language:
     async with transaction() as session:
-
         language = await session.execute(
             select(Language).where(Language.name.ilike(tmp_language.name)),
         )
@@ -66,7 +66,7 @@ async def create_language(tmp_language: LanguageCreate) -> Language:
 
 async def delete_language(id: int) -> bool:
     async with transaction() as session:
-        language = await session.get(Language,id)
+        language = await session.get(Language, id)
 
         if not language:
             raise ValueError("Language not found")
@@ -77,6 +77,5 @@ async def delete_language(id: int) -> bool:
 
         if not res.rowcount:
             raise ValueError("No rows were affected")
-
 
     return res.rowcount

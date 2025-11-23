@@ -5,6 +5,7 @@ Revises: f7ca6f9f5035
 Create Date: 2025-11-20 08:55:29.091878
 
 """
+
 from collections.abc import Sequence
 from typing import Union
 
@@ -20,7 +21,7 @@ depends_on: str | Sequence[str] | None = None
 
 def upgrade() -> None:
     """Upgrade schema."""
-    op.drop_column("languages","code")
+    op.drop_column("languages", "code")
     op.add_column(
         "languages",
         sa.Column("code_short", sa.String(length=2), nullable=True),
