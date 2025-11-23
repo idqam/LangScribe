@@ -8,6 +8,8 @@ from jose import JWTError, jwt
 from Persistence.DTOs import UserRead
 from Persistence.Enums import USER_ROLE
 
+load_dotenv()
+
 app = FastAPI()
 
 SECRET_KEY = os.getenv("JWT_SECRET_KEY")
