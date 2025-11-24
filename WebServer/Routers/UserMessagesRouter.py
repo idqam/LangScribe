@@ -43,7 +43,7 @@ async def create_new_usermessage(
 @router.delete("/{id}", tags=["usermessages"], response_model=bool)
 async def delete_existing_usermessage(id: int, token_data: dict = Depends(admin_required)):
     try:
-        success = await delete_usermessage(id)
+        success = await bool(delete_usermessage(id))
         return bool(success)
 
     except Exception as e:

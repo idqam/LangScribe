@@ -32,13 +32,14 @@ class User(Base):
     user_languages: Mapped[list["UserLanguage"]] = relationship(
         back_populates="user",
         cascade="all, delete-orphan",
-        lazy='selectin'
+        lazy="selectin",
     )
     reports: Mapped[list["Report"]] = relationship(
         back_populates="user",
         cascade= "all, delete-orphan",
-        lazy='selectin'
+        lazy="selectin",
     )
+    messages :Mapped[list["UserMessage"]] = relationship(back_populates="user",lazy="selectin")
 
     __table_args__ = (
         Index("ix_email", "email"),

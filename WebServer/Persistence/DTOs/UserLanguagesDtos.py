@@ -11,6 +11,7 @@ class UserLanguageCreate(BaseModel):
 
 
 class UserLanguageUpdate(BaseModel):
+    user_id: int
     proficiency_level: PROFICIENCY_LEVELS | None = None
 
 

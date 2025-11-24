@@ -14,6 +14,7 @@ class UserMessage(Base):
     prompt_id: Mapped[int] = mapped_column(ForeignKey("prompts.id"))
     content: Mapped[dict[str, Any]] = mapped_column(JSON)
 
+    user: Mapped["User"] = relationship(back_populates="messages")
     prompt: Mapped["Prompt"] = relationship(back_populates="messages")
     report: Mapped["Report"] = relationship(back_populates="message")
     __table_args__ = (Index("ix_user_id", "user_id"),)
