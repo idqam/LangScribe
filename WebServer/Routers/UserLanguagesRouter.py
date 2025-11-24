@@ -40,7 +40,7 @@ async def create_new_user_language(user_language_dto: UserLanguageCreate, token_
 @router.delete("/{id}", tags=["user_languages"], response_model=bool)
 async def delete_existing_user_language(id: int, token_data: dict = Depends(admin_required)):
     try:
-        success = await delete_user_languages(id, token_data.id)
+        success = await delete_user_languages(id)
         return bool(success)
 
     except Exception as e:

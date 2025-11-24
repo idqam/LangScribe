@@ -17,4 +17,17 @@ from .ReportsRepo import (
 from .SubscriptionsRepo import create_subscription, delete_subscription, get_all_subscriptions
 from .UserLanguagesRepo import create_user_languages, delete_user_languages, get_all_user_languages
 from .UserMessagesRepo import create_usermessage, delete_usermessage, get_all_usermessages
-from .UsersRepo import create_user, delete_user, get_all_users, get_one_user, update_user, get_languages, get_reports
+from .UsersRepo import (
+    create_user,
+    delete_my_user_language,
+    delete_user,
+    get_all_users,
+    get_languages,
+    get_messages,
+    get_one_user,
+    get_reports,
+    post_message,
+    post_user_language,
+    update_user,
+    patch_user_language
+)
