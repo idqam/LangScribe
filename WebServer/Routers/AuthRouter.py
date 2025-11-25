@@ -4,6 +4,7 @@ from urllib.parse import urlencode
 import httpx
 from dotenv import load_dotenv
 from fastapi import APIRouter, HTTPException, Request, status
+from fastapi.responses import RedirectResponse
 from Persistence.DTOs import UserCreate, UserRead
 from Persistence.Enums import USER_ROLE
 from Repositories import create_user, delete_user, get_all_users, get_one_user, update_user
@@ -94,8 +95,9 @@ async def call_back(request: Request) -> str:
             this_user = await create_user(dto)
 
         user_read = UserRead.model_validate(this_user)
-
-        return create_token(user_read)
+        token = create_token(user_read)
+        print(token)
+        return RedirectResponse(f"http://localhost:3000/write?jwt={token}")
 
     except HTTPException:
 
