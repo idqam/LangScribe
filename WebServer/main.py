@@ -13,15 +13,30 @@ from Routers import (
     users_router,
 )
 from starlette.middleware.sessions import SessionMiddleware
+from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI(title="LangScribe API Gateway")
+
+origins = [
+    "http://localhost:3000",
+    "https://google.com",
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 
 app.add_middleware(
     SessionMiddleware,
     secret_key=os.getenv("SECRET_KEY"),
     max_age=3600,
     same_site="lax",
-    https_only=False,
+    https_only=False, ## change on prod
 )
 
 routers = [
