@@ -4,13 +4,13 @@ from Resources import transaction
 from sqlalchemy import delete, select
 
 
-async def get_all_subscriptions() -> [Subscription]:
+async def get_all_subscriptions() -> list[Subscription]:
     async with transaction() as session:
         res = await session.execute(
             select(Subscription),
         )
 
-        subscriptions = res.scalars().all()
+        subscriptions: list[Subscription] = res.scalars().all()
 
     return subscriptions
 
@@ -26,7 +26,7 @@ async def create_subscription(tmp_subscription: SubscriptionCreate) -> Subscript
     return new_subscription
 
 
-async def delete_subscription(id: int) -> bool:
+async def delete_subscription(id: int) -> int:
     async with transaction() as session:
         subscription = await session.get(Subscription,id)
 
@@ -40,5 +40,5 @@ async def delete_subscription(id: int) -> bool:
         if not res.rowcount:
             raise ValueError("No rows were affected")
 
-
-    return res.rowcount
+        count: int = res.rowcount
+    return count

@@ -6,13 +6,14 @@ from sqlalchemy import delete, select, update
 from .UserMessagesRepo import create_usermessage
 from .UserLanguagesRepo import create_user_languages, delete_user_languages
 from fastapi import status, HTTPException
-async def get_all_users() -> [User]:
+
+async def get_all_users() -> list[User]:
     async with transaction() as session:
         res = await session.execute(
             select(User),
         )
 
-        users = res.scalars().all()
+        users: list[User] = res.scalars().all()
 
     return users
 
@@ -77,7 +78,7 @@ async def create_user(tmp_user: UserCreate) -> User:
     return new_user
 
 
-async def delete_user(id: int) -> bool:
+async def delete_user(id: int) -> int:
     async with transaction() as session:
         user = await session.get(User,id)
 
@@ -91,8 +92,9 @@ async def delete_user(id: int) -> bool:
         if not res.rowcount:
             raise ValueError("No rows were affected")
 
+        count: int = res.rowcount
+    return count
 
-    return res.rowcount
 
 ##################### LANGUAGES #######################
 
@@ -134,8 +136,8 @@ async def delete_my_user_language(id: int, delete_id: int) -> bool:
             status_code=status.HTTP_403_FORBIDDEN,
             detail="You can only operate on your own resources.",
         )
-
-    return await delete_user_languages(delete_id)
+    success: int = await delete_user_languages(delete_id)
+    return bool(success)
 
 ################ REPORTS ##########################
     

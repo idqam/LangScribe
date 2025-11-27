@@ -18,6 +18,7 @@ class User(Base):
     hashed_password: Mapped[str] = mapped_column()
     role: Mapped[USER_ROLE] = mapped_column(SQLEnum(USER_ROLE), default=USER_ROLE.USER)
     pfp: Mapped[str | None] = mapped_column()
+    new_user: Mapped[bool] = mapped_column()
     day_streak: Mapped[int] = mapped_column(server_default="0")
     subscription_id: Mapped[int] = mapped_column(ForeignKey("subscriptions.id"))
     last_login: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))

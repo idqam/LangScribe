@@ -8,11 +8,13 @@ class UserLanguageCreate(BaseModel):
     user_id: int
     language_id: int
     proficiency_level: PROFICIENCY_LEVELS
+    desired_level: PROFICIENCY_LEVELS
 
 
 class UserLanguageUpdate(BaseModel):
     user_id: int
-    proficiency_level: PROFICIENCY_LEVELS | None = None
+    proficiency_level: PROFICIENCY_LEVELS | None 
+    desired_level: PROFICIENCY_LEVELS | None
 
 
 class UserLanguageRead(BaseModel):
@@ -22,6 +24,7 @@ class UserLanguageRead(BaseModel):
     user_id: int
     language_id: int
     proficiency_level: PROFICIENCY_LEVELS
+    desired_level: PROFICIENCY_LEVELS
     created_at: datetime
     updated_at: datetime
 
