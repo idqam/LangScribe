@@ -5,10 +5,11 @@ import httpx
 from dotenv import load_dotenv
 from fastapi import APIRouter, HTTPException, Request, status
 from fastapi.responses import RedirectResponse
-from Persistence.DTOs import UserCreate, UserRead
+from Persistence.DTOs import UserCreate, UserRead, UserUpdate
 from Persistence.Enums import USER_ROLE
 from Repositories import create_user, delete_user, get_all_users, get_one_user, update_user
 from Resources import create_token
+from datetime import datetime, timezone
 
 load_dotenv()
 
@@ -31,7 +32,7 @@ async def auth_google():
     return {"url": google_auth_url}
 
 @router.get("/google/callback")
-async def call_back(request: Request) -> str:
+async def call_back(request: Request) -> RedirectResponse:
     """Handle Google OAuth callback and create/retrieve user"""
     try:
         # Get authorization code from query params
@@ -93,11 +94,16 @@ async def call_back(request: Request) -> str:
                 role=USER_ROLE.USER,
             )
             this_user = await create_user(dto)
+        else:
+            updated_user = UserUpdate(
+                last_login=update_streak(this_user.last_login,this_user.day_streak)
+            )
+            update_user(this_user.id, update_user)
 
         user_read = UserRead.model_validate(this_user)
         token = create_token(user_read)
         print(token)
-        return RedirectResponse(f"http://localhost:3000/write?jwt={token}")
+        return RedirectResponse(f"http://localhost:3000/en/write?jwt={token}")
 
     except HTTPException:
 
@@ -108,3 +114,16 @@ async def call_back(request: Request) -> str:
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Authentication failed: {e!s}",
         )
+        
+def update_streak(last_login: datetime, streak: int) -> int:
+    now = datetime.now(timezone.utc)
+    delta = now - last_login
+    days = delta.total_seconds() / 86400
+
+    if days < 1:
+        return streak
+
+    if days < 2:
+        return streak + 1
+
+    return 1

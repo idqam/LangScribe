@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from loguru import logger
-from Persistence.DTOs import ReportCreate, ReportRead, ReportUpdate
+from Persistence.DTOs import ReportCreate, ReportRead, ReportUpdate, UserRead
 from Repositories import (
     create_report,
     delete_report,
@@ -17,16 +17,16 @@ router = APIRouter(
 
 
 @router.get("/", tags=["reports"], response_model=list[ReportRead])
-async def read_reports(token_data: dict = Depends(admin_required)) -> [ReportRead]:
+async def read_reports(token_data: UserRead = Depends(admin_required)) -> list[ReportRead]:
     try:
-        reports = await get_all_reports()
+        reports: list[ReportRead] = await get_all_reports()
         return reports
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
 
 @router.get("/{id}", tags=["reports"], response_model=ReportRead)
-async def read_report(id: int, token_data: dict = Depends(admin_required)) -> ReportRead:
+async def read_report(id: int, token_data: UserRead = Depends(admin_required)) -> ReportRead:
     try:
         report = await get_one_report(id, email= None)
         return report
@@ -40,7 +40,7 @@ async def read_report(id: int, token_data: dict = Depends(admin_required)) -> Re
     response_model=ReportRead,
     status_code=status.HTTP_201_CREATED,
 )
-async def create_new_report(report_dto: ReportCreate, token_data: dict = Depends(admin_required)) -> ReportRead:
+async def create_new_report(report_dto: ReportCreate, token_data: UserRead = Depends(admin_required)) -> ReportRead:
     try:
         logger.error("router")
         report = await create_report(report_dto)
@@ -53,7 +53,7 @@ async def create_new_report(report_dto: ReportCreate, token_data: dict = Depends
 
 
 @router.patch("/{id}", tags=["reports"], response_model=bool)
-async def update_existing_report(id: int, report_dto: ReportUpdate, token_data: dict = Depends(admin_required)):
+async def update_existing_report(id: int, report_dto: ReportUpdate, token_data: UserRead = Depends(admin_required)):
     try:
         success = await update_report(id, report_dto)
         return bool(success)
@@ -66,7 +66,7 @@ async def update_existing_report(id: int, report_dto: ReportUpdate, token_data: 
 
 
 @router.delete("/{id}", tags=["reports"], response_model=bool )
-async def delete_existing_report(id: int, token_data: dict = Depends(admin_required)):
+async def delete_existing_report(id: int, token_data: UserRead = Depends(admin_required)):
 
     try:
         success = await delete_report(id)

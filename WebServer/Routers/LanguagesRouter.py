@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from loguru import logger
-from Persistence.DTOs import LanguageCreate, LanguageRead, LanguageUpdate
+from Persistence.DTOs import LanguageCreate, LanguageRead, LanguageUpdate, UserRead
 from Repositories import (
     create_language,
     delete_language,
@@ -17,16 +17,16 @@ router = APIRouter(
 
 
 @router.get("/", tags=["languages"], response_model=list[LanguageRead])
-async def read_languages(token_data: dict = Depends(verify_token)) -> [LanguageRead]:
+async def read_languages(token_data: UserRead = Depends(verify_token)) -> list[LanguageRead]:
     try:
-        languages = await get_all_languages()
+        languages: list[LanguageRead] = await get_all_languages()
         return languages
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
 
 @router.get("/{id}", tags=["languages"], response_model=LanguageRead)
-async def read_language(id: int, token_data: dict = Depends(verify_token)) -> LanguageRead:
+async def read_language(id: int, token_data: UserRead = Depends(verify_token)) -> LanguageRead:
     try:
         language = await get_one_language(id, email= None)
         return language
@@ -53,7 +53,7 @@ async def create_new_language(language_dto: LanguageCreate, _ : dict = Depends(a
 
 
 @router.patch("/{id}", tags=["languages"], response_model=bool)
-async def update_existing_language(id: int, language_dto: LanguageUpdate, token_data: dict = Depends(admin_required)):
+async def update_existing_language(id: int, language_dto: LanguageUpdate, token_data: UserRead = Depends(admin_required)):
     try:
         success = await update_language(id, language_dto)
         return bool(success)
@@ -66,7 +66,7 @@ async def update_existing_language(id: int, language_dto: LanguageUpdate, token_
 
 
 @router.delete("/{id}", tags=["languages"], response_model=bool)
-async def delete_existing_language(id: int, token_data: dict = Depends(admin_required)):
+async def delete_existing_language(id: int, token_data: UserRead = Depends(admin_required)):
 
     try:
         success = await delete_language(id)

@@ -14,7 +14,7 @@ router = APIRouter(
 
 
 @router.get("/", tags=["users"], response_model=list[UserRead])
-async def read_users(token_data: dict = Depends(admin_required)) -> [UserRead]:
+async def read_users(token_data: UserRead = Depends(admin_required)) -> [UserRead]:
     try:
         users = await get_all_users()
         return users
@@ -23,7 +23,7 @@ async def read_users(token_data: dict = Depends(admin_required)) -> [UserRead]:
 
 
 @router.get("/{id}", tags=["users"], response_model=UserRead)
-async def read_user(id: int, token_data: dict = Depends(admin_required)) -> UserRead:
+async def read_user(id: int, token_data: UserRead = Depends(admin_required)) -> UserRead:
     try:
         user = await get_one_user(id, email= None)
         return user
@@ -38,7 +38,7 @@ async def read_user(id: int, token_data: dict = Depends(admin_required)) -> User
     response_model_exclude={"hashed_password"},
     status_code=status.HTTP_201_CREATED,
 )
-async def create_new_user(user_dto: UserCreate, token_data: dict = Depends(admin_required)) -> UserRead:
+async def create_new_user(user_dto: UserCreate, token_data: UserRead = Depends(admin_required)) -> UserRead:
     try:
         user = await create_user(user_dto)
         return user
@@ -50,7 +50,7 @@ async def create_new_user(user_dto: UserCreate, token_data: dict = Depends(admin
 
 
 @router.patch("/{id}", tags=["users"], response_model=bool)
-async def update_existing_user(id: int, user_dto: UserUpdate, token_data: dict = Depends(admin_required)):
+async def update_existing_user(id: int, user_dto: UserUpdate, token_data: UserRead = Depends(admin_required)):
     try:
         success = await update_user(id, user_dto)
         return bool(success)
@@ -63,7 +63,7 @@ async def update_existing_user(id: int, user_dto: UserUpdate, token_data: dict =
 
 
 @router.delete("/{id}", tags=["users"], response_model=bool)
-async def delete_existing_user(id: int, token_data: dict = Depends(admin_required)):
+async def delete_existing_user(id: int, token_data: UserRead = Depends(admin_required)):
 
     try:
         success = await delete_user(id)

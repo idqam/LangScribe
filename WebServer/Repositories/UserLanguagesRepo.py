@@ -4,14 +4,14 @@ from Resources import self_user, transaction
 from sqlalchemy import delete, select
 
 
-async def get_all_user_languages() -> [UserLanguage]:
+async def get_all_user_languages() -> list[UserLanguage]:
     async with transaction() as session:
         res = await session.execute(
             select(UserLanguage),
         )
 
 
-        user_languages = res.scalars().all()
+        user_languages: list[UserLanguage] = res.scalars().all()
 
     return user_languages
 
@@ -33,7 +33,7 @@ async def create_user_languages(tmp_user_languages: UserLanguageCreate) -> UserL
     return new_user_languages
 
 
-async def delete_user_languages(id: int) -> bool:
+async def delete_user_languages(id: int) -> int:
     async with transaction() as session:
         user_languages = await session.get(UserLanguage,id)
 
@@ -47,6 +47,6 @@ async def delete_user_languages(id: int) -> bool:
 
         if not res.rowcount:
             raise ValueError("No rows were affected")
+        count: int = res.rowcount
+    return count
 
-
-    return res.rowcount

@@ -2,6 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from Persistence.DTOs import (
     UserLanguageCreate,
     UserLanguageRead,
+    UserRead
 )
 from Repositories import create_user_languages, delete_user_languages, get_all_user_languages
 from Resources import admin_required, verify_token
@@ -13,9 +14,9 @@ router = APIRouter(
 
 
 @router.get("/", tags=["user_languages"], response_model=list[UserLanguageRead])
-async def read_user_languages(token_data: dict = Depends(admin_required)) -> [UserLanguageRead]:
+async def read_user_languages(token_data: UserRead = Depends(admin_required)) -> list[UserLanguageRead]:
     try:
-        user_languages = await get_all_user_languages()
+        user_languages: list[UserLanguageRead] = await get_all_user_languages()
         return user_languages
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
@@ -27,7 +28,7 @@ async def read_user_languages(token_data: dict = Depends(admin_required)) -> [Us
     response_model_exclude={"hashed_password"},
     status_code=status.HTTP_201_CREATED,
 )
-async def create_new_user_language(user_language_dto: UserLanguageCreate, token_data: dict = Depends(admin_required)) -> UserLanguageRead:
+async def create_new_user_language(user_language_dto: UserLanguageCreate, token_data: UserRead = Depends(admin_required)) -> UserLanguageRead:
     try:
         user_language = await create_user_languages(user_language_dto)
         return user_language
@@ -38,7 +39,7 @@ async def create_new_user_language(user_language_dto: UserLanguageCreate, token_
         )
 
 @router.delete("/{id}", tags=["user_languages"], response_model=bool)
-async def delete_existing_user_language(id: int, token_data: dict = Depends(admin_required)):
+async def delete_existing_user_language(id: int, token_data: UserRead = Depends(admin_required)):
     try:
         success = await delete_user_languages(id)
         return bool(success)

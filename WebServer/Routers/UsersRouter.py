@@ -32,7 +32,7 @@ router = APIRouter(
 
 
 @router.get("/", response_model=UserRead)
-async def get_me(token_data: dict = Depends(verify_token)):
+async def get_me(token_data: UserRead = Depends(verify_token)):
     try:
         return await get_one_user(token_data.id, token_data.email)
     except Exception as e:
@@ -99,9 +99,10 @@ async def patch_my_language(id: int,user_language: UserLanguageUpdate,token_data
 
 
 @router.delete("/languages/{id}", response_model=bool)
-async def delete_my_language(id: int, token_data: dict = Depends(verify_token)):
+async def delete_my_language(id: int, token_data: UserRead = Depends(verify_token)):
     try:
-        return await bool(delete_my_user_language(token_data.id,id))
+        success = await delete_my_user_language(token_data.id,id)
+        return bool(success)
     except Exception as e:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,

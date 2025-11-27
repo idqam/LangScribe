@@ -4,13 +4,13 @@ from Resources import transaction
 from sqlalchemy import delete, select
 
 
-async def get_all_prompts() -> [Prompt]:
+async def get_all_prompts() -> list[Prompt]:
     async with transaction() as session:
         res = await session.execute(
             select(Prompt),
         )
 
-        prompts = res.scalars().all()
+        prompts:list[Prompt]  = res.scalars().all()
 
     return prompts
 
@@ -31,7 +31,7 @@ async def create_prompt(tmp_prompt: PromptCreate) -> Prompt:
     return new_prompt
 
 
-async def delete_prompt(id: int) -> bool:
+async def delete_prompt(id: int) -> int:
     async with transaction() as session:
         prompt = await session.get(Prompt,id)
 
@@ -45,5 +45,5 @@ async def delete_prompt(id: int) -> bool:
         if not res.rowcount:
             raise ValueError("No rows were affected")
 
-
-    return res.rowcount
+        count: int = res.rowcount
+    return count

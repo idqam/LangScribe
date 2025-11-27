@@ -5,19 +5,19 @@ from Resources import transaction
 from sqlalchemy import delete, select, update
 
 
-async def get_all_languages() -> [Language]:
+async def get_all_languages() -> list[Language]:
     async with transaction() as session:
         res = await session.execute(
             select(Language),
         )
 
-        languages = res.scalars().all()
+        languages: list[Language] = res.scalars().all()
 
     return languages
 
 
 async def get_one_language(tmp_id: int | None) -> Language:
-    async with transaction() as session:
+    async with transaction() as session:    
 
         language = await session.execute(
             select(Language).where(Language.id == tmp_id),
@@ -64,7 +64,7 @@ async def create_language(tmp_language: LanguageCreate) -> Language:
     return new_language
 
 
-async def delete_language(id: int) -> bool:
+async def delete_language(id: int) -> int:
     async with transaction() as session:
         language = await session.get(Language,id)
 
@@ -78,5 +78,5 @@ async def delete_language(id: int) -> bool:
         if not res.rowcount:
             raise ValueError("No rows were affected")
 
-
-    return res.rowcount
+        count: int = res.rowcount
+    return count

@@ -4,13 +4,13 @@ from Resources import transaction
 from sqlalchemy import delete, select
 
 
-async def get_all_usermessages() -> [UserMessage]:
+async def get_all_usermessages() -> list[UserMessage]:
     async with transaction() as session:
         res = await session.execute(
             select(UserMessage),
         )
 
-        usermessages = res.scalars().all()
+        usermessages: list[UserMessage] = res.scalars().all()
 
     return usermessages
 
@@ -31,7 +31,7 @@ async def create_usermessage(tmp_usermessage: UserMessageCreate) -> UserMessage:
     return new_usermessage
 
 
-async def delete_usermessage(id: int) -> bool:
+async def delete_usermessage(id: int) -> int:
     async with transaction() as session:
         usermessage = await session.get(UserMessage,id)
 
@@ -44,6 +44,5 @@ async def delete_usermessage(id: int) -> bool:
 
         if not res.rowcount:
             raise ValueError("No rows were affected")
-
-
-    return res.rowcount
+        count: int = res.rowcount
+    return count

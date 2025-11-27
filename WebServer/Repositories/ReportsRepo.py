@@ -4,13 +4,13 @@ from Resources import transaction
 from sqlalchemy import delete, select, update
 
 
-async def get_all_reports() -> [Report]:
+async def get_all_reports() -> list[Report]:
     async with transaction() as session:
         res = await session.execute(
             select(Report),
         )
 
-        reports = res.scalars().all()
+        reports: list[Report] = res.scalars().all()
 
     return reports
 
@@ -63,7 +63,7 @@ async def create_report(tmp_report: ReportCreate) -> Report:
     return new_report
 
 
-async def delete_report(id: int) -> bool:
+async def delete_report(id: int) -> int:
     async with transaction() as session:
         report = await session.get(Report,id)
 
@@ -77,5 +77,5 @@ async def delete_report(id: int) -> bool:
         if not res.rowcount:
             raise ValueError("No rows were affected")
 
-
-    return res.rowcount
+        count: int = res.rowcount
+    return count
