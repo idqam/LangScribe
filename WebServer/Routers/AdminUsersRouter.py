@@ -14,9 +14,9 @@ router = APIRouter(
 
 
 @router.get("/", tags=["users"], response_model=list[UserRead])
-async def read_users(token_data: UserRead = Depends(admin_required)) -> [UserRead]:
+async def read_users(token_data: UserRead = Depends(admin_required)) -> list[UserRead]:
     try:
-        users = await get_all_users()
+        users: list[UserRead] = await get_all_users()
         return users
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
