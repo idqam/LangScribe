@@ -33,6 +33,7 @@ async def create_new_usermessage(
     token_data: UserRead = Depends(verify_token),
 ) -> UserMessageRead:
     try:
+        
         usermessage = await create_usermessage(usermessage_dto)
         return usermessage
     except Exception as e:

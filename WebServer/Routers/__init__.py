@@ -7,3 +7,4 @@ from .SubscriptionRouter import router as subscription_router
 from .UserLanguagesRouter import router as user_languages_router
 from .UserMessagesRouter import router as user_message_router
 from .UsersRouter import router as users_router
+from .JobsRouter import router as jobs_router
