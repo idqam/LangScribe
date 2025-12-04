@@ -13,6 +13,8 @@ router = APIRouter(
 )
 
 
+
+
 @router.get("/", tags=["users"], response_model=list[UserRead])
 async def read_users(token_data: UserRead = Depends(admin_required)) -> list[UserRead]:
     try:

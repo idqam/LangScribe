@@ -23,11 +23,17 @@ from Repositories import (
     patch_user_language,
     get_messages
 )
-from Resources import verify_token
+from Resources import verify_token, lifespan
+from fastapi_cache import FastAPICache
+import json
+import time
+from httpx import AsyncClient
+
 
 router = APIRouter(
     prefix="/users/me",
     tags=["users"],
+    lifespan=lifespan
 )
 
 
@@ -136,7 +142,39 @@ async def get_my_messages(token_data: UserRead = Depends(verify_token)):
 @router.post("/messages", response_model=UserMessageCreate)
 async def post_add_message(message: UserMessageCreate, token_data: UserRead = Depends(verify_token)):
     try:
-        return await post_message(token_data.id,message)
+        message = await post_message(token_data.id,message)
+        job_id = int(time.time() * 1000)
+        context = {
+            "job_id": job_id,
+            "user_id": token_data.id,
+            "language_id": 5, ##CHANGE THIS
+            "user_message_id": message.user_id,
+        }
+
+        print(f'building context: {context}')
+
+        await FastAPICache.get_backend().set(
+            f"job_context:{job_id}",
+            json.dumps(context),
+            expire=3600
+        )
+
+        async with AsyncClient() as client:
+
+            response = await client.post(
+                url=f"http://ai-worker:8001/jobs/{job_id}",
+                json={
+                    "text":message.content['additionalProp1']['message'],
+                    "user_lvl": "A2",
+                    "user_language":"Spanish",
+                    "prompt": "How was your day?"
+                }
+            )
+            print(f"Response status: {response.status_code}")
+            print(f"Response body: {response.text}")
+
+        return message
+    
     except Exception as e:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,

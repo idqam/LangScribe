@@ -11,15 +11,28 @@ from Routers import (
     user_languages_router,
     user_message_router,
     users_router,
+    # jobs_router
 )
 from starlette.middleware.sessions import SessionMiddleware
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi_cache import FastAPICache
+from fastapi_cache.backends.redis import RedisBackend
+import redis.asyncio as redis
+# from contextlib import asynccontextmanager
+# from fastapi_cache.decorator import cache
 
-app = FastAPI(title="LangScribe API Gateway")
+
+async def lifespan(app: FastAPI):
+    redis_client = redis.from_url("redis://redis:6379")
+    FastAPICache.init(RedisBackend(redis_client), prefix="cache")
+    yield
+
+app = FastAPI(title="LangScribe API Gateway", lifespan=lifespan)
 
 origins = [
     "http://localhost:3000",
     "https://google.com",
+    "http://ai-worker:8001"
 ]
 
 app.add_middleware(
@@ -49,12 +62,14 @@ routers = [
     prompt_router,
     language_router,
     subscription_router,
+    # jobs_router
 ]
 
 for router in routers:
     app.include_router(router)
 
-
 @app.post("/health")
 async def health() -> dict[str, str]:
     return {"status": "cool", "service": "vibing"}
+
+
