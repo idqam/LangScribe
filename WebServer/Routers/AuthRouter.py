@@ -98,7 +98,7 @@ async def call_back(request: Request) -> RedirectResponse:
             updated_user = UserUpdate(
                 last_login=update_streak(this_user.last_login,this_user.day_streak)
             )
-            update_user(this_user.id, update_user)
+            await update_user(this_user.id, update_user)
 
         user_read = UserRead.model_validate(this_user)
         token = create_token(user_read)

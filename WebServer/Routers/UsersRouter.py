@@ -1,15 +1,14 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status, BackgroundTasks
 from Persistence.DTOs import (
-    LanguageRead,
     ReportRead,
-    UserCreate,
     UserLanguageCreate,
     UserLanguageRead,
     UserMessageCreate,
     UserMessageRead,
     UserRead,
     UserUpdate,
-    UserLanguageUpdate
+    UserLanguageUpdate,
+    ReportCreate
 )
 from Repositories import (
     delete_my_user_language,
@@ -21,14 +20,13 @@ from Repositories import (
     post_user_language,
     update_user,
     patch_user_language,
-    get_messages
+    get_messages,
+    create_report,
+    get_prompt,
+    get_language,
+    retry_reports
 )
-from Resources import verify_token, lifespan
-from fastapi_cache import FastAPICache
-import json
-import time
-from httpx import AsyncClient
-
+from Resources import verify_token, lifespan, OpenAIClient
 
 router = APIRouter(
     prefix="/users/me",
@@ -126,6 +124,13 @@ async def get_my_reports(token_data: UserRead = Depends(verify_token)):
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=str(e),
         )
+    
+@router.get('/reports/re-try/{message_id}',response_model=None)
+async def retry_report(message_id: int, background_task: BackgroundTasks,token_data: UserRead = Depends(verify_token)):
+
+    await retry_reports(message_id=message_id, user_id=token_data.id,background_task=background_task )
+
+
 
 ################## MESSAGES ##########################
 
@@ -140,39 +145,32 @@ async def get_my_messages(token_data: UserRead = Depends(verify_token)):
         )
 
 @router.post("/messages", response_model=UserMessageCreate)
-async def post_add_message(message: UserMessageCreate, token_data: UserRead = Depends(verify_token)):
+async def post_add_message(message: UserMessageCreate, background_task: BackgroundTasks,token_data: UserRead = Depends(verify_token)):
     try:
         message = await post_message(token_data.id,message)
-        job_id = int(time.time() * 1000)
-        context = {
-            "job_id": job_id,
-            "user_id": token_data.id,
-            "language_id": 5, ##CHANGE THIS
-            "user_message_id": message.user_id,
-        }
+        prompt = await get_prompt(message.prompt_id)
+        user_language = await get_language(token_data.id,prompt.language_id)
 
-        print(f'building context: {context}')
-
-        await FastAPICache.get_backend().set(
-            f"job_context:{job_id}",
-            json.dumps(context),
-            expire=3600
-        )
-
-        async with AsyncClient() as client:
-
-            response = await client.post(
-                url=f"http://ai-worker:8001/jobs/{job_id}",
-                json={
-                    "text":message.content['additionalProp1']['message'],
-                    "user_lvl": "A2",
-                    "user_language":"Spanish",
-                    "prompt": "How was your day?"
-                }
+        async def bg_create_report():
+            ai_response = OpenAIClient().review_user_text(
+                user_text= message.content,
+                prompt= prompt.content,
+                user_language=token_data.default_language,
+                user_proficiency=user_language.proficiency_level
             )
-            print(f"Response status: {response.status_code}")
-            print(f"Response body: {response.text}")
 
+            report = ReportCreate(
+                user_id=token_data.id,
+                user_message_id=message.id,
+                content=ai_response,
+                language_id= user_language.language_id,
+                rating=3 ##TODO: Extract from ai_response.rate or something like that
+            )
+
+            await create_report(report)
+
+        background_task.add_task(bg_create_report)
+        
         return message
     
     except Exception as e:

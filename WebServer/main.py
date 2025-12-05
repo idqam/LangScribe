@@ -18,13 +18,15 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi_cache import FastAPICache
 from fastapi_cache.backends.redis import RedisBackend
 import redis.asyncio as redis
-# from contextlib import asynccontextmanager
+from Resources import OpenAIClient
+from contextlib import asynccontextmanager
 # from fastapi_cache.decorator import cache
 
-
+@asynccontextmanager
 async def lifespan(app: FastAPI):
     redis_client = redis.from_url("redis://redis:6379")
     FastAPICache.init(RedisBackend(redis_client), prefix="cache")
+    client = OpenAIClient()
     yield
 
 app = FastAPI(title="LangScribe API Gateway", lifespan=lifespan)

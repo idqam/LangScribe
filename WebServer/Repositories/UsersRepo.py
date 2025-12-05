@@ -1,11 +1,14 @@
-from Persistence.DTOs import UserCreate, UserUpdate, LanguageRead, ReportRead, UserMessageRead, UserMessageCreate, UserLanguageCreate, UserLanguageRead, UserLanguageUpdate
+from Persistence.DTOs import UserCreate, UserUpdate, LanguageRead, ReportRead, UserMessageRead, UserMessageCreate, UserLanguageCreate, UserLanguageRead, UserLanguageUpdate, ReportCreate
 from Persistence.Enums import SUBSCRIPTION_TIER
 from Persistence.Models import Subscription, User, Language, Report, UserLanguage, UserMessage
 from Resources import transaction
 from sqlalchemy import delete, select, update
 from .UserMessagesRepo import create_usermessage
 from .UserLanguagesRepo import create_user_languages, delete_user_languages
-from fastapi import status, HTTPException
+from fastapi import status, HTTPException, BackgroundTasks
+from Resources import OpenAIClient
+from .ReportsRepo import create_report
+from .PromptsRepo import get_prompt
 
 async def get_all_users() -> list[User]:
     async with transaction() as session:
@@ -102,6 +105,15 @@ async def get_languages(id: int) -> list[UserLanguageRead]:
     async with transaction() as session:
         user = await session.get(User, id)
         return [UserLanguageRead.model_validate(ul) for ul in user.user_languages]
+    
+async def get_language(user_id: int, ul_id : int) -> UserLanguage:
+    async with transaction() as session:
+        user = await session.get(User,user_id)
+        for lan in user.user_languages:
+            if lan.language_id == ul_id:
+                return lan
+            
+    raise Exception("User language not found :/")
 
 async def post_user_language(id: int, user_lan_dto: UserLanguageCreate) -> UserLanguageRead:
     user_lan_dto.user_id = id
@@ -146,6 +158,45 @@ async def get_reports(id: int) -> list[ReportRead]:
         user = await session.get(User,id)
         return [ReportRead.model_validate(report) for report in user.reports]
     
+
+async def retry_reports(message_id: int, user_id: int, background_task: BackgroundTasks) -> list[ReportRead]:
+    async with transaction() as session:
+        user = await session.get(User,user_id)
+        message = await session.get(UserMessage,id)
+        prompt = await get_prompt(message.prompt_id)
+        user_language = await get_language(user.id,prompt.language_id)
+
+        exist = False
+
+        for message in user.messages:
+            if message.id == message_id:
+                exist = True
+
+        if not exist:
+            raise Exception('message not found!')
+        
+        async def bg_create_report():
+            ai_response = OpenAIClient().review_user_text(
+                user_text= message.content,
+                prompt= prompt.content,
+                user_language=user.default_language,
+                user_proficiency=user_language.proficiency_level
+            )
+
+            report = ReportCreate(
+                user_id=user.id,
+                user_message_id=message.id,
+                content=ai_response,
+                language_id= user_language.language_id,
+                rating=3
+            )
+
+            await create_report(report)
+        
+    background_task.add_task(bg_create_report)
+        
+
+
 ################ MESSAGES #############################
     
 async def get_messages(id: int) -> list[UserMessageRead]:
@@ -155,6 +206,8 @@ async def get_messages(id: int) -> list[UserMessageRead]:
     
 async def post_message(id: int, message_dto: UserMessageCreate) -> UserMessageRead:
     message_dto.user_id = id
+
+
     return await create_usermessage(message_dto)
 
 
