@@ -13,6 +13,7 @@ class UserCreate(BaseModel):
     new_user: bool = True
     last_login: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     day_streak: int = 1
+    default_language: str | None = None 
 
 class UserUpdate(BaseModel):
     hashed_password: str | None = None
@@ -21,6 +22,8 @@ class UserUpdate(BaseModel):
     role: USER_ROLE | None = None
     new_user: bool | None = None
     last_login: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    default_language: str | None = None
+    
 
 ## This is what the jwt would look like once is decoded
 class UserRead(BaseModel):
@@ -32,6 +35,7 @@ class UserRead(BaseModel):
     subscription_id: int
     day_streak: int
     new_user: bool
+    default_language: str | None = None
     model_config = ConfigDict(from_attributes=True, extra="allow")
 
 

@@ -22,6 +22,7 @@ class User(Base):
     day_streak: Mapped[int] = mapped_column(server_default="0")
     subscription_id: Mapped[int] = mapped_column(ForeignKey("subscriptions.id"))
     last_login: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    default_language: Mapped[str | None] = mapped_column(String)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
     updated_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),

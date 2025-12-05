@@ -14,6 +14,13 @@ async def get_all_prompts() -> list[Prompt]:
 
     return prompts
 
+async def get_prompt(id: int) -> Prompt:
+
+    async with transaction() as session:
+        res = await session.get(Prompt,id)
+
+    return res 
+
 
 async def create_prompt(tmp_prompt: PromptCreate) -> Prompt:
     async with transaction() as session:

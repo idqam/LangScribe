@@ -7,3 +7,5 @@ from .JwtService import create_token as create_token
 from .JwtService import self_user as self_user
 from .JwtService import verify_token as verify_token
 from .redis import lifespan
+from .OpenAIService import OpenAIClient
+
